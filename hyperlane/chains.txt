@@ -9,3 +9,4 @@
     interchainAccountIsm: "0x77419cB2640de75349b32ebF9e33453d11E0E0EF"
     validatorAnnounce: "0xc02b64795B3810314517c64c80C2c739E0ac7311"
     testRecipient: "0x71C74f8ff07fe2015F96d68a100a475BEf14C82B"
+    mailboxCelo: "0xEf9F292fcEBC3848bF4bB92a96a04F9ECBb78E59"
