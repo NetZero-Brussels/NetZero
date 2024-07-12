@@ -1,0 +1,62 @@
+{
+  "chains": {
+    "arbitrumsepolia": {
+      "blockExplorers": [
+        {
+          "apiUrl": "https://api-sepolia.arbiscan.io/api",
+          "family": "etherscan",
+          "name": "Arbiscan",
+          "url": "https://sepolia.arbiscan.io"
+        }
+      ],
+      "blocks": {
+        "confirmations": 1,
+        "estimateBlockTime": 3,
+        "reorgPeriod": 0
+      },
+      "chainId": 421614,
+      "deployer": {
+        "name": "Abacus Works",
+        "url": "https://www.hyperlane.xyz"
+      },
+      "displayName": "Arbitrumsepolia",
+      "domainId": 421614,
+      "index": {
+        "from": 49690504
+      },
+      "isTestnet": true,
+      "name": "arbitrumsepolia",
+      "nativeToken": {
+        "decimals": 18,
+        "name": "Ether",
+        "symbol": "ETH"
+      },
+      "protocol": "ethereum",
+      "rpcUrls": [
+        {
+          "http": "https://sepolia-rollup.arbitrum.io/rpc"
+        }
+      ],
+      "technicalStack": "arbitrumnitro",
+      "domainRoutingIsmFactory": "0xA4F4aa414972126e85Aa174F3665b193db667F1A",
+      "fallbackRoutingHook": "0xAb9B273366D794B7F80B4378bc8Aaca75C6178E2",
+      "interchainGasPaymaster": "0xc756cFc1b7d0d4646589EDf10eD54b201237F5e8",
+      "interchainSecurityModule": "0x3Af23d101D67a5e2aaaEA6711c320b7004128dC5",
+      "mailbox": "0x2Ab42F5d4AA4a988E6027D5C31C9d61becc6977E",
+      "merkleTreeHook": "0xAD34A66Bf6dB18E858F6B686557075568c6E031C",
+      "pausableHook": "0x86fb9F1c124fB20ff130C41a79a432F770f67AFD",
+      "protocolFee": "0x75f3E2a4f424401195A5E176246Ecc9f7e7680ff",
+      "proxyAdmin": "0xF11Ca8162aD013dD4DD64b2c761269FB00ad114F",
+      "staticAggregationHookFactory": "0x814Bd81CC1895C4d6DE040042903b05702AceE35",
+      "staticAggregationIsmFactory": "0x75aE2230Ea7541fEe5F7141Cc4ED642c5C9Fe00F",
+      "staticMerkleRootMultisigIsmFactory": "0x652eB64EaFf175B56b596Aa5708C998148ABf745",
+      "staticMessageIdMultisigIsmFactory": "0xF6b0F3c1c6F1961d8A4ea2158eC99BC30E2a03D4",
+      "storageGasOracle": "0xddf4C3e791caCaFd26D7fb275549739B38ae6e75",
+      "testRecipient": "0x71C74f8ff07fe2015F96d68a100a475BEf14C82B",
+      "validatorAnnounce": "0xc02b64795B3810314517c64c80C2c739E0ac7311",
+      "interchainAccountRouter": "0x7d0DD79e07dAF65aA9e9066BDc56105799616a0A",
+      "interchainAccountIsm": "0x77419cB2640de75349b32ebF9e33453d11E0E0EF"
+    }
+  },
+  "defaultRpcConsensusType": "fallback"
+}
