@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=../schema.json
+name: arbitrumsepolia
+displayName: Arbitrumsepolia
+chainId: 421614
+domainId: 421614
+protocol: ethereum
+rpcUrls:
+  - http: https://sepolia-rollup.arbitrum.io/rpc
+nativeToken:
+  symbol: ETH
+  name: Ether
+  decimals: 18
