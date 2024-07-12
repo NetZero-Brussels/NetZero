@@ -1,0 +1,19 @@
+defaultHook:
+  beneficiary: "0xd1D1B8F0B6740fad9Fb4166EeEEFEDDB84770938"
+  maxProtocolFee: "100000000000000000000000000000000000"
+  owner: "0xd1D1B8F0B6740fad9Fb4166EeEEFEDDB84770938"
+  protocolFee: "0"
+  type: protocolFee
+defaultIsm:
+  threshold: 1
+  type: messageIdMultisigIsm
+  validators:
+    - "0xd1D1B8F0B6740fad9Fb4166EeEEFEDDB84770938"
+owner: "0xd1D1B8F0B6740fad9Fb4166EeEEFEDDB84770938"
+requiredHook:
+  beneficiary: "0xd1D1B8F0B6740fad9Fb4166EeEEFEDDB84770938"
+  maxProtocolFee: "100000000000000000000000000000000000"
+  owner: "0xd1D1B8F0B6740fad9Fb4166EeEEFEDDB84770938"
+  protocolFee: "0"
+  type: protocolFee
+
