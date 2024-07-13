@@ -1,0 +1,8 @@
+{
+  "celo-alfajores": {
+    "UserRegistry": {
+      "address": "0x7E1EEed0bC3922Ab389227ac9C87E1c64aBD5c76",
+      "startBlock": 25098973
+    }
+  }
+}

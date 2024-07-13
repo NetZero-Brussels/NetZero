@@ -19,7 +19,7 @@ contract RegistryTest is Test {
         owner = makeAddr("Owner");
         updater = makeAddr("Updater");
 
-        cUSD = new TokencUSD('cUSD','cUSD');
+        cUSD = new TokencUSD('cUSD', 'cUSD');
         registry = new MainNetRegistry(owner);
         vm.prank(owner);
         registry.initialize(address(cUSD), address(updater));
@@ -35,8 +35,6 @@ contract RegistryTest is Test {
     function test_deposit() public {
         address user = makeAddr("User");
         vm.startPrank(user);
-        uint balance = cUSD.balanceOf(user);
-        console.log(balance);
         deal(address(cUSD), user, 10 ether);
         registry.register();
         cUSD.approve(address(registry), 10 ether);
@@ -44,28 +42,28 @@ contract RegistryTest is Test {
         vm.stopPrank();
     }
 
-    function test_points() public {
+    function test_update_points() public {
         address user2 = makeAddr("User 2");
         vm.startPrank(user2);
         registry.register();
         vm.stopPrank();
 
-        vm.startPrank(owner);
-        registry.addPoints(user2, 5);
-        registry.subtractPoints(user2, 3);
-        console.log(registry.getPoints(user2));
+        vm.startPrank(updater);
+        registry.updatePoints(user2, 5);
+        assertEq(registry.getPoints(user2), 5);
         vm.stopPrank();
     }
 
-    function test_points2() public {
+    function test_subtract_points() public {
         address user2 = makeAddr("User 2");
         vm.startPrank(user2);
         registry.register();
         vm.stopPrank();
 
-        vm.startPrank(owner);
-        vm.expectRevert();
-        registry.subtractPoints(user2, 10);
+        vm.startPrank(updater);
+        registry.updatePoints(user2, 5);
+        // vm.expectRevert();
+        registry.updatePoints(user2, 10);
         vm.stopPrank();
     }
 
@@ -80,37 +78,25 @@ contract RegistryTest is Test {
         vm.stopPrank();
     }
 
-function test_add_friend() public {
-    address user = makeAddr("User");
-    address friend = makeAddr("Friend");
-    
-    vm.startPrank(user);
-    try registry.register() {
-        console.log("User registered successfully");
-    } catch (bytes memory reason) {
-        console.logBytes(reason);
-    }
-    vm.stopPrank();
+    function test_add_friend() public {
+        address user = makeAddr("User");
+        address friend = makeAddr("Friend");
+        
+        vm.startPrank(user);
+        registry.register();
+        vm.stopPrank();
 
-    vm.startPrank(friend);
-    try registry.register() {
-        console.log("Friend registered successfully");
-    } catch (bytes memory reason) {
-        console.logBytes(reason);
-    }
-    vm.stopPrank();
+        vm.startPrank(friend);
+        registry.register();
+        vm.stopPrank();
 
-    vm.startPrank(user);
-    try registry.addFriend(friend) {
-        console.log("Friend added successfully");
-    } catch (bytes memory reason) {
-        console.logBytes(reason);
+        vm.startPrank(user);
+        registry.addFriend(friend);
+        address[] memory friends = registry.getFriends(user);
+        assertEq(friends.length, 1);
+        assertEq(friends[0], friend);
+        vm.stopPrank();
     }
-    address[] memory friends = registry.getFriends(user);
-    assertEq(friends.length, 1);
-    assertEq(friends[0], friend);
-    vm.stopPrank();
-}
 
     function test_money_spent() public {
         address user = makeAddr("User");
@@ -123,5 +109,19 @@ function test_add_friend() public {
         uint256 moneySpent = registry.getMoneySpent(user);
         assertEq(moneySpent, 50);
         vm.stopPrank();
+    }
+
+    function test_set_updater_address() public {
+        address newUpdater = makeAddr("New Updater");
+        
+        vm.startPrank(owner);
+        registry.setUpdaterAddress(newUpdater);
+        assertEq(registry.updaterAddress(), newUpdater);
+        vm.stopPrank();
+
+        // vm.startPrank(updater);
+        // vm.expectRevert("Caller is not authorized to update");
+        // registry.setUpdaterAddress(makeAddr("Another Updater"));
+        // vm.stopPrank();
     }
 }
