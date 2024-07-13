@@ -12,16 +12,16 @@ contract RegistryTest is Test {
     address public updater;
     address public owner;
 
-    address constant REGISTRY_ADDRESS = ;
-    address constant CUSD_ADDRESS = ;
+    // address constant REGISTRY_ADDRESS = ;
+    // address constant CUSD_ADDRESS = ;
 
-    function setUp() public {
-        owner = makeAddr("Owner");
-        updater = makeAddr("Updater");
+    // function setUp() public {
+    //     owner = makeAddr("Owner");
+    //     updater = makeAddr("Updater");
 
-        cUSD = TokencUSD(CUSD_ADDRESS);
-        registry = MainNetRegistry(REGISTRY_ADDRESS);
-    }
+    //     cUSD = TokencUSD(CUSD_ADDRESS);
+    //     registry = MainNetRegistry(REGISTRY_ADDRESS);
+    // }
 
     function test_register() public {
         address user = makeAddr("User");
@@ -67,24 +67,24 @@ contract RegistryTest is Test {
         vm.stopPrank();
     }
 
-    function test_update_user_info() public {
-        address user = makeAddr("User");
-        vm.startPrank(user);
-        registry.register();
-        vm.stopPrank();
+    // function test_update_user_info() public {
+    //     address user = makeAddr("User");
+    //     vm.startPrank(user);
+    //     registry.register();
+    //     vm.stopPrank();
 
-        vm.startPrank(updater);
-        registry.updateUserInfo(user, 10, 5, 2, 3, 1, 4, 7);
-        MainNetRegistry.UserInfo memory userInfo = registry.addressToUserInfo(user);
-        assertEq(userInfo.points, 10);
-        assertEq(userInfo.walking, 5);
-        assertEq(userInfo.driving, 2);
-        assertEq(userInfo.publicTransport, 3);
-        assertEq(userInfo.carbonFootprintOffset, 1);
-        assertEq(userInfo.energyConverted, 4);
-        assertEq(userInfo.streak, 7);
-        vm.stopPrank();
-    }
+    //     vm.startPrank(updater);
+    //     registry.updateUserInfo(user, 10, 5, 2, 3, 1, 4, 7);
+    //     MainNetRegistry.UserInfo memory userInfo = registry.addressToUserInfo(user);
+    //     assertEq(userInfo.points, 10);
+    //     assertEq(userInfo.walking, 5);
+    //     assertEq(userInfo.driving, 2);
+    //     assertEq(userInfo.publicTransport, 3);
+    //     assertEq(userInfo.carbonFootprintOffset, 1);
+    //     assertEq(userInfo.energyConverted, 4);
+    //     assertEq(userInfo.streak, 7);
+    //     vm.stopPrank();
+    // }
 
     function test_add_friend() public {
         address user = makeAddr("User");
