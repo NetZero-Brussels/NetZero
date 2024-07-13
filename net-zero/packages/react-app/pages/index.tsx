@@ -15,12 +15,14 @@ export default function Home() {
         getNFTs,
         signTransaction,
         registerUser,
-        addUserPoints,
+        updateUserPoints,
         depositToUser,
         approveSpending,
         withdrawFromUser,
         getUserInfo,
         addFriend,
+        getMoneySpent,
+        getFriends,
     } = useWeb3();
 
     const [cUSDLoading, setCUSDLoading] = useState(false);
@@ -31,6 +33,8 @@ export default function Home() {
     const [friendAddress, setFriendAddress] = useState("");
     const [userInfo, setUserInfo] = useState<any>(null);
     const [isRegistered, setIsRegistered] = useState<boolean>(false);
+    const [moneySpent, setMoneySpent] = useState<number | null>(null);
+    const [friendsList, setFriendsList] = useState<string[]>([]);
 
     useEffect(() => {
         getUserAddress();
@@ -53,6 +57,10 @@ export default function Home() {
             const info = await getUserInfo(address!);
             setUserInfo(info);
             setIsRegistered(true);
+            const spent = await getMoneySpent(address!);
+            setMoneySpent(spent);
+            const friends = await getFriends(address!);
+            setFriendsList(friends);
         } catch (error) {
             console.log("User is not registered");
             setIsRegistered(false);
@@ -117,10 +125,10 @@ export default function Home() {
     async function handleAddPoints() {
         try {
             const pointsToAdd = 100;
-            const receipt = await addUserPoints(address!, pointsToAdd);
-            console.log('Points added:', receipt);
+            const receipt = await updateUserPoints(address!, pointsToAdd);
+            console.log('Points updated:', receipt);
         } catch (error) {
-            console.error('Error adding points:', error);
+            console.error('Error updating points:', error);
         }
     }
 
@@ -159,6 +167,7 @@ export default function Home() {
         try {
             const receipt = await addFriend(friendAddress);
             console.log('Friend added:', receipt);
+            checkUserRegistration(); // Refresh user info to get updated friends list
         } catch (error) {
             console.error('Error adding friend:', error);
         }
@@ -306,6 +315,24 @@ export default function Home() {
                                 <div className="mt-5">
                                     <h3 className="font-bold">User Info:</h3>
                                     <pre>{JSONbig.stringify(userInfo, null, 2)}</pre>
+                                </div>
+                            )}
+
+                            {moneySpent !== null && (
+                                <div className="mt-5">
+                                    <h3 className="font-bold">Money Spent:</h3>
+                                    <p>{moneySpent} cUSD</p>
+                                </div>
+                            )}
+
+                            {friendsList.length > 0 && (
+                                <div className="mt-5">
+                                    <h3 className="font-bold">Friends:</h3>
+                                    <ul>
+                                        {friendsList.map((friend, index) => (
+                                            <li key={index}>{friend}</li>
+                                        ))}
+                                    </ul>
                                 </div>
                             )}
                         </>

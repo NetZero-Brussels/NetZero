@@ -154,7 +154,7 @@ export const useWeb3 = () => {
         return receipt;
     };
 
-    const addUserPoints = async (userAddress: string, points: number) => {
+    const updateUserPoints = async (userAddress: string, points: number) => {
         let walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -165,7 +165,7 @@ export const useWeb3 = () => {
         const tx = await walletClient.writeContract({
             address: USER_REGISTRY_CONTRACT,
             abi: UserRegistryABI,
-            functionName: "addPoints",
+            functionName: "updatePoints",
             account: address,
             args: [userAddress, points],
         });
@@ -302,6 +302,42 @@ export const useWeb3 = () => {
         return receipt;
     };
 
+    const getFriends = async (userAddress: string) => {
+        let userRegistryContract = getContract({
+            abi: UserRegistryABI,
+            address: USER_REGISTRY_CONTRACT,
+            client: publicClient,
+        });
+
+        try {
+            const friends = await userRegistryContract.read.getFriends([
+                userAddress,
+            ]);
+            return friends;
+        } catch (error) {
+            console.error("Error fetching friends:", error);
+            throw error;
+        }
+    };
+
+    const getMoneySpent = async (userAddress: string) => {
+        let userRegistryContract = getContract({
+            abi: UserRegistryABI,
+            address: USER_REGISTRY_CONTRACT,
+            client: publicClient,
+        });
+
+        try {
+            const moneySpent = await userRegistryContract.read.getMoneySpent([
+                userAddress,
+            ]);
+            return moneySpent;
+        } catch (error) {
+            console.error("Error fetching money spent:", error);
+            throw error;
+        }
+    };
+
     return {
         address,
         getUserAddress,
@@ -310,11 +346,13 @@ export const useWeb3 = () => {
         getNFTs,
         signTransaction,
         registerUser,
-        addUserPoints,
+        updateUserPoints,
         approveSpending,
         depositToUser,
         withdrawFromUser,
         getUserInfo,
         addFriend,
+        getFriends,
+        getMoneySpent,
     };
 };
