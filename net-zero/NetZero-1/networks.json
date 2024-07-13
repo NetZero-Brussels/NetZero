@@ -1,8 +1,0 @@
-{
-  "celo-alfajores": {
-    "MainNetRegistry": {
-      "address": "0xdb9ebe37196b2e2e8043338c482cf2b9c58c7b06",
-      "startBlock": 25090813
-    }
-  }
-}

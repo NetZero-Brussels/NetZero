@@ -2,12 +2,11 @@ import { newMockEvent } from "matchstick-as"
 import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   UserRegistered,
-  PointsAdded,
-  PointsSubtracted,
+  PointsUpdated,
   Deposit,
   Withdrawal,
   UserInfoUpdated
-} from "../generated/MainNetRegistry/MainNetRegistry"
+} from "../generated/UserRegistry/UserRegistry"
 
 export function createUserRegisteredEvent(
   user: Address,
@@ -27,40 +26,22 @@ export function createUserRegisteredEvent(
   return userRegisteredEvent
 }
 
-export function createPointsAddedEvent(
+export function createPointsUpdatedEvent(
   user: Address,
   points: BigInt
-): PointsAdded {
-  let pointsAddedEvent = changetype<PointsAdded>(newMockEvent())
+): PointsUpdated {
+  let pointsUpdatedEvent = changetype<PointsUpdated>(newMockEvent())
 
-  pointsAddedEvent.parameters = new Array()
+  pointsUpdatedEvent.parameters = new Array()
 
-  pointsAddedEvent.parameters.push(
+  pointsUpdatedEvent.parameters.push(
     new ethereum.EventParam("user", ethereum.Value.fromAddress(user))
   )
-  pointsAddedEvent.parameters.push(
+  pointsUpdatedEvent.parameters.push(
     new ethereum.EventParam("points", ethereum.Value.fromUnsignedBigInt(points))
   )
 
-  return pointsAddedEvent
-}
-
-export function createPointsSubtractedEvent(
-  user: Address,
-  points: BigInt
-): PointsSubtracted {
-  let pointsSubtractedEvent = changetype<PointsSubtracted>(newMockEvent())
-
-  pointsSubtractedEvent.parameters = new Array()
-
-  pointsSubtractedEvent.parameters.push(
-    new ethereum.EventParam("user", ethereum.Value.fromAddress(user))
-  )
-  pointsSubtractedEvent.parameters.push(
-    new ethereum.EventParam("points", ethereum.Value.fromUnsignedBigInt(points))
-  )
-
-  return pointsSubtractedEvent
+  return pointsUpdatedEvent
 }
 
 export function createDepositEvent(user: Address, amount: BigInt): Deposit {
