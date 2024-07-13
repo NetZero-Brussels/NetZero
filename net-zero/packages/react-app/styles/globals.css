@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: "Futura";
+    src: url("../font/futura-pt/FuturaCyrillicMedium.ttf");
+    /* font-weight: 600;*/
+    /* Demi is generally considered as semi-bold or demi-bold */
+}
+
+@font-face {
+    font-family: "OpenSansRegular";
+    src: url("../font/Open_Sans/static/OpenSans-Regular.ttf");
+    /* font-weight: 600;*/
+    /* Demi is generally considered as semi-bold or demi-bold */
+}
+
+a {
+    font-family: "OpenSansRegular";
+    font-size: small;
+
+}
+
+p {
+    font-family: "OpenSansRegular";
+    font-size: medium;
+
+}

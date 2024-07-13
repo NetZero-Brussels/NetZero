@@ -1,0 +1,38 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: UserRegistry
+    network: celo-alfajores
+    source:
+      address: "0x7E1EEed0bC3922Ab389227ac9C87E1c64aBD5c76"
+      abi: UserRegistry
+      startBlock: 25098973
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - UserRegistered
+        - PointsUpdated
+        - Deposit
+        - Withdrawal
+        - UserInfoUpdated
+      abis:
+        - name: UserRegistry
+          file: ./abis/UserRegistry.json
+      eventHandlers:
+        - event: UserRegistered(indexed address,indexed uint256)
+          handler: handleUserRegistered
+        - event: PointsUpdated(indexed address,uint256)
+          handler: handlePointsUpdated
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: Withdrawal(indexed address,uint256)
+          handler: handleWithdrawal
+        - event: UserInfoUpdated(indexed address)
+          handler: handleUserInfoUpdated
+      file: ./src/user-registry.ts
