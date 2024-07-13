@@ -328,10 +328,11 @@ export const useWeb3 = () => {
         });
 
         try {
-            const moneySpent = await userRegistryContract.read.getMoneySpent([
+            const moneySpent = await userRegistryContract.read.getBalance([
                 userAddress,
             ]);
-            return moneySpent;
+            console.log('money spent' + moneySpent)
+            return moneySpent as number;
         } catch (error) {
             console.error("Error fetching money spent:", error);
             throw error;

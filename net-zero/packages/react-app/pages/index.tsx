@@ -59,8 +59,10 @@ export default function Home() {
             const info = await getUserInfo(address!);
             setUserInfo(info);
             setIsRegistered(true);
-            const spent = await getMoneySpent(address!);
-            setMoneySpent(spent);
+            const spentInWei = await getMoneySpent(address!);
+            const spentInCUSD = parseFloat(spentInWei) / 10**18;
+            console.log(spentInCUSD);
+            setMoneySpent(spentInCUSD);
             const friends = await getFriends(address!);
             setFriendsList(friends);
         } catch (error) {
@@ -68,6 +70,7 @@ export default function Home() {
             setIsRegistered(false);
         }
     };
+    
 
     async function sendingCUSD() {
         if (!address) {
@@ -154,6 +157,10 @@ export default function Home() {
             console.error('Error depositing:', error);
         }
     }
+
+    useEffect(() => {
+        console.log('Money Spent has changed:', moneySpent);
+    }, [moneySpent]);
 
     async function handleWithdraw() {
         try {
