@@ -29,6 +29,7 @@ export default function Home() {
     const [tx, setTx] = useState<any>(undefined);
     const [friendAddress, setFriendAddress] = useState("");
     const [userInfo, setUserInfo] = useState<any>(null);
+    const [isRegistered, setIsRegistered] = useState<boolean>(false);
 
     useEffect(() => {
         getUserAddress();
@@ -42,14 +43,18 @@ export default function Home() {
 
         if (address) {
             fetchData();
-            fetchUserInfo();
+            checkUserRegistration();
         }
     }, [address]);
 
-    const fetchUserInfo = async () => {
-        if (address) {
-            const info = await getUserInfo(address);
+    const checkUserRegistration = async () => {
+        try {
+            const info = await getUserInfo(address!);
             setUserInfo(info);
+            setIsRegistered(true);
+        } catch (error) {
+            console.log("User is not registered");
+            setIsRegistered(false);
         }
     };
 
@@ -100,6 +105,7 @@ export default function Home() {
         try {
             const receipt = await registerUser();
             console.log('User registered:', receipt);
+            checkUserRegistration(); // Check registration status again after registering
         } catch (error) {
             console.error('Error registering user:', error);
         } finally {
@@ -236,66 +242,72 @@ export default function Home() {
                         />
                     </div>
 
-                    <div className="w-full px-3 mt-5">
-                        <PrimaryButton
-                            onClick={handleRegister}
-                            title="Register User"
-                            widthFull
-                        />
-                    </div>
-
-                    <div className="w-full px-3 mt-5">
-                        <PrimaryButton
-                            onClick={handleAddPoints}
-                            title="Add Points"
-                            widthFull
-                        />
-                    </div>
-
-                    <div className="w-full px-3 mt-5">
-                        <PrimaryButton
-                            onClick={handleApproval}
-                            title="Approve Deposit"
-                            widthFull
-                        />
-                    </div>
-
-                    <div className="w-full px-3 mt-5">
-                        <PrimaryButton
-                            onClick={handleDeposit}
-                            title="Deposit"
-                            widthFull
-                        />
-                    </div>
-
-                    <div className="w-full px-3 mt-5">
-                        <PrimaryButton
-                            onClick={handleWithdraw}
-                            title="Withdraw"
-                            widthFull
-                        />
-                    </div>
-
-                    <div className="w-full px-3 mt-5">
-                        <input
-                            type="text"
-                            value={friendAddress}
-                            onChange={(e) => setFriendAddress(e.target.value)}
-                            placeholder="Enter Friend's Address"
-                            className="border rounded p-2"
-                        />
-                        <PrimaryButton
-                            onClick={handleAddFriend}
-                            title="Add Friend"
-                            widthFull
-                        />
-                    </div>
-
-                    {userInfo && (
-                        <div className="mt-5">
-                            <h3 className="font-bold">User Info:</h3>
-                            <pre>{JSON.stringify(userInfo, null, 2)}</pre>
+                    {!isRegistered && (
+                        <div className="w-full px-3 mt-5">
+                            <PrimaryButton
+                                onClick={handleRegister}
+                                title="Register User"
+                                widthFull
+                            />
                         </div>
+                    )}
+
+                    {isRegistered && (
+                        <>
+                            <div className="w-full px-3 mt-5">
+                                <PrimaryButton
+                                    onClick={handleAddPoints}
+                                    title="Add Points"
+                                    widthFull
+                                />
+                            </div>
+
+                            <div className="w-full px-3 mt-5">
+                                <PrimaryButton
+                                    onClick={handleApproval}
+                                    title="Approve Deposit"
+                                    widthFull
+                                />
+                            </div>
+
+                            <div className="w-full px-3 mt-5">
+                                <PrimaryButton
+                                    onClick={handleDeposit}
+                                    title="Deposit"
+                                    widthFull
+                                />
+                            </div>
+
+                            <div className="w-full px-3 mt-5">
+                                <PrimaryButton
+                                    onClick={handleWithdraw}
+                                    title="Withdraw"
+                                    widthFull
+                                />
+                            </div>
+
+                            <div className="w-full px-3 mt-5">
+                                <input
+                                    type="text"
+                                    value={friendAddress}
+                                    onChange={(e) => setFriendAddress(e.target.value)}
+                                    placeholder="Enter Friend's Address"
+                                    className="border rounded p-2"
+                                />
+                                <PrimaryButton
+                                    onClick={handleAddFriend}
+                                    title="Add Friend"
+                                    widthFull
+                                />
+                            </div>
+
+                            {userInfo && (
+                                <div className="mt-5">
+                                    <h3 className="font-bold">User Info:</h3>
+                                    <pre>{JSON.stringify(userInfo, null, 2)}</pre>
+                                </div>
+                            )}
+                        </>
                     )}
                 </>
             )}
