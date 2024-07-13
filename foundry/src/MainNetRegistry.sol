@@ -32,11 +32,11 @@ contract MainNetRegistry is ReentrancyGuard, Ownable {
     address public updaterAddress;
 
     event UserRegistered(address indexed user, uint256 indexed ID);
-    event PointsAdded(address indexed user, uint256 points);
-    event PointsSubtracted(address indexed user, uint256 points);
+    event PointsUpdated(address indexed user, uint256 points);
     event Deposit(address indexed user, uint256 amount);
     event Withdrawal(address indexed user, uint256 amount);
     event UserInfoUpdated(address indexed user);
+    event UpdaterAddressUpdated(address indexed newUpdater);
 
     modifier onlyRegistered() {
         require(users[msg.sender].registered, "User is not registered");
@@ -51,8 +51,7 @@ contract MainNetRegistry is ReentrancyGuard, Ownable {
     uint256 private currentID = 1;
     mapping(address => User) private users;
 
-    constructor(address initialOwner) Ownable(initialOwner) {
-    }
+    constructor(address initialOwner) Ownable(initialOwner) {}
 
     function initialize(address _cUSDAddress, address _updaterAddress) external onlyOwner {
         cUSDAddress = _cUSDAddress;
@@ -80,22 +79,13 @@ contract MainNetRegistry is ReentrancyGuard, Ownable {
         emit UserRegistered(msg.sender, userID);
     }
 
-    function addPoints(address user, uint256 points) external onlyOwner {
+    function updatePoints(address user, uint256 points) external onlyUpdater {
         require(users[user].registered, "User is not registered");
 
-        users[user].points += points;
-        addressToUserInfo[user].points += points;
+        users[user].points = points;
+        addressToUserInfo[user].points = points;
 
-        emit PointsAdded(user, points);
-    }
-
-    function subtractPoints(address user, uint256 points) external onlyOwner {
-        require(users[user].registered, "User is not registered");
-
-        users[user].points -= points;
-        addressToUserInfo[user].points -= points;
-
-        emit PointsSubtracted(user, points);
+        emit PointsUpdated(user, points);
     }
 
     function getPoints(address user) external view returns (uint256) {
@@ -178,5 +168,11 @@ contract MainNetRegistry is ReentrancyGuard, Ownable {
     function getUserInfo(address user) external view returns (UserInfo memory) {
         require(users[user].registered, "User is not registered");
         return addressToUserInfo[user];
+    }
+
+    function setUpdaterAddress(address newUpdater) external onlyOwner {
+        require(newUpdater != address(0), "New updater address cannot be zero address");
+        updaterAddress = newUpdater;
+        emit UpdaterAddressUpdated(newUpdater);
     }
 }
