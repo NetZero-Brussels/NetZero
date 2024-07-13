@@ -1,4 +1,4 @@
-import { FundingProjectList } from "@/pages/fund/FundProject";
+import { FundingProjectList } from "./FundProject";
 
 export function OngoingProjects() {
     return (
