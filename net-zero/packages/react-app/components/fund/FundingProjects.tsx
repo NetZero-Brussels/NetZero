@@ -3,6 +3,7 @@
 import { Box, Typography, Card, CardMedia, CardContent, CircularProgress, CircularProgressProps, CardActionArea } from '@mui/material';
 import { projectsData, ProjectType } from './mock/mockProjects';
 import Image from 'next/image';
+import SupportButton from './SupportButton';
 
 interface CircularProgressWithLabelProps extends CircularProgressProps {
     value: number;
@@ -49,15 +50,17 @@ export function FundingProjectList() {
                             <Typography gutterBottom variant="h5" component="div">
                                 {project.title}
                             </Typography>
-                            <Box display="flex" alignItems="center" gap={2}>
+                            <div className='flex items-center justify-around gap-2 mb-3'>
                                 <CircularProgressWithLabel value={project.progress} />
                                 <Typography variant="body2" color="textSecondary">
                                     {project.supporters} supporters
                                 </Typography>
-                            </Box>
-                            <Typography variant="body2" color="textSecondary">
-                                {project.timeLeft}
-                            </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {project.timeLeft}
+                                </Typography>
+                            </div>
+
+                            <SupportButton />
                         </CardContent>
                     </CardActionArea>
                 </Card>
