@@ -4,6 +4,7 @@ import { useWeb3 } from "@/contexts/useWeb3";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { parseEther } from 'viem';
+import JSONbig from 'json-bigint';
 
 export default function Home() {
     const {
@@ -105,7 +106,7 @@ export default function Home() {
         try {
             const receipt = await registerUser();
             console.log('User registered:', receipt);
-            checkUserRegistration(); // Check registration status again after registering
+            checkUserRegistration();
         } catch (error) {
             console.error('Error registering user:', error);
         } finally {
@@ -304,7 +305,7 @@ export default function Home() {
                             {userInfo && (
                                 <div className="mt-5">
                                     <h3 className="font-bold">User Info:</h3>
-                                    <pre>{JSON.stringify(userInfo, null, 2)}</pre>
+                                    <pre>{JSONbig.stringify(userInfo, null, 2)}</pre>
                                 </div>
                             )}
                         </>
