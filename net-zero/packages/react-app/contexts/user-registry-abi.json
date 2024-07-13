@@ -1,11 +1,14 @@
-{
-    "contractName": "RegistryContract",
-    "abi": [
-      {
+[
+    {
         "inputs": [
             {
                 "internalType": "address",
                 "name": "_cUSDAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_updaterAddress",
                 "type": "address"
             }
         ],
@@ -42,6 +45,25 @@
             }
         ],
         "name": "PointsAdded",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "points",
+                "type": "uint256"
+            }
+        ],
+        "name": "PointsSubtracted",
         "type": "event"
     },
     {
@@ -126,6 +148,24 @@
                 "internalType": "address",
                 "name": "user",
                 "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "points",
+                "type": "uint256"
+            }
+        ],
+        "name": "subtractPoints",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
             }
         ],
         "name": "getPoints",
@@ -183,6 +223,93 @@
         ],
         "stateMutability": "view",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getUserInfo",
+        "outputs": [
+            {
+                "internalType": "struct MainNetRegistry.UserInfo",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "friend",
+                "type": "address"
+            }
+        ],
+        "name": "addFriend",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getFriends",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "addMoneySpent",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getMoneySpent",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
     }
 ]
-}
