@@ -1,7 +1,9 @@
-import React from "react";
-
+;
+import Fund from "./fund";
 
 export default function FundPage() {
 
-    return <div className="">Welcome to the fundrising projects</div>
+    return (
+        <Fund />
+    );
 }
