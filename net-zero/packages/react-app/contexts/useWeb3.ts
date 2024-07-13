@@ -20,7 +20,7 @@ const publicClient = createPublicClient({
 
 const cUSDTokenAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1";
 const MINIPAY_NFT_CONTRACT = "0xE8F4699baba6C86DA9729b1B0a1DA1Bd4136eFeF";
-const USER_REGISTRY_CONTRACT = "0xdb9ebe37196b2e2e8043338c482cf2b9c58c7b06";
+const USER_REGISTRY_CONTRACT = "0x7E1EEed0bC3922Ab389227ac9C87E1c64aBD5c76";
 
 export const useWeb3 = () => {
     const [address, setAddress] = useState<string | null>(null);
@@ -154,7 +154,7 @@ export const useWeb3 = () => {
         return receipt;
     };
 
-    const addUserPoints = async (userAddress: string, points: number) => {
+    const updateUserPoints = async (userAddress: string, points: number) => {
         let walletClient = createWalletClient({
             transport: custom(window.ethereum),
             chain: celoAlfajores,
@@ -165,7 +165,7 @@ export const useWeb3 = () => {
         const tx = await walletClient.writeContract({
             address: USER_REGISTRY_CONTRACT,
             abi: UserRegistryABI,
-            functionName: "addPoints",
+            functionName: "updatePoints",
             account: address,
             args: [userAddress, points],
         });
@@ -302,6 +302,66 @@ export const useWeb3 = () => {
         return receipt;
     };
 
+    const getFriends = async (userAddress: string) => {
+        let userRegistryContract = getContract({
+            abi: UserRegistryABI,
+            address: USER_REGISTRY_CONTRACT,
+            client: publicClient,
+        });
+
+        try {
+            const friends = await userRegistryContract.read.getFriends([
+                userAddress,
+            ]);
+            return friends;
+        } catch (error) {
+            console.error("Error fetching friends:", error);
+            throw error;
+        }
+    };
+
+    const getMoneySpent = async (userAddress: string) => {
+        let userRegistryContract = getContract({
+            abi: UserRegistryABI,
+            address: USER_REGISTRY_CONTRACT,
+            client: publicClient,
+        });
+
+        try {
+            const moneySpent = await userRegistryContract.read.getBalance([
+                userAddress,
+            ]);
+            console.log('money spent' + moneySpent)
+            return moneySpent as number;
+        } catch (error) {
+            console.error("Error fetching money spent:", error);
+            throw error;
+        }
+    };
+
+    const updateUpdaterAddress = async (newUpdaterAddress: string) => {
+        let walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+
+        let [address] = await walletClient.getAddresses();
+
+        const tx = await walletClient.writeContract({
+            address: USER_REGISTRY_CONTRACT,
+            abi: UserRegistryABI,
+            functionName: "setUpdaterAddress",
+            account: address,
+            args: [newUpdaterAddress],
+        });
+
+        const receipt = await publicClient.waitForTransactionReceipt({
+            hash: tx,
+        });
+
+        return receipt;
+    };
+
     return {
         address,
         getUserAddress,
@@ -310,11 +370,14 @@ export const useWeb3 = () => {
         getNFTs,
         signTransaction,
         registerUser,
-        addUserPoints,
+        updateUserPoints,
         approveSpending,
         depositToUser,
         withdrawFromUser,
         getUserInfo,
         addFriend,
+        getFriends,
+        getMoneySpent,
+        updateUpdaterAddress,
     };
 };

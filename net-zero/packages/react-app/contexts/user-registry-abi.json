@@ -1,21 +1,5 @@
 [
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_cUSDAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "_updaterAddress",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
         "anonymous": false,
         "inputs": [
             {
@@ -23,6 +7,12 @@
                 "internalType": "address",
                 "name": "user",
                 "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "ID",
+                "type": "uint256"
             }
         ],
         "name": "UserRegistered",
@@ -44,26 +34,7 @@
                 "type": "uint256"
             }
         ],
-        "name": "PointsAdded",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "points",
-                "type": "uint256"
-            }
-        ],
-        "name": "PointsSubtracted",
+        "name": "PointsUpdated",
         "type": "event"
     },
     {
@@ -105,6 +76,19 @@
         "type": "event"
     },
     {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "UserInfoUpdated",
+        "type": "event"
+    },
+    {
         "inputs": [],
         "name": "cUSDAddress",
         "outputs": [
@@ -115,6 +99,61 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "updaterAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "currentID",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "initialOwner",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_cUSDAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_updaterAddress",
+                "type": "address"
+            }
+        ],
+        "name": "initialize",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -137,25 +176,7 @@
                 "type": "uint256"
             }
         ],
-        "name": "addPoints",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "points",
-                "type": "uint256"
-            }
-        ],
-        "name": "subtractPoints",
+        "name": "updatePoints",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -230,17 +251,46 @@
                 "internalType": "address",
                 "name": "user",
                 "type": "address"
-            }
-        ],
-        "name": "getUserInfo",
-        "outputs": [
+            },
             {
-                "internalType": "struct MainNetRegistry.UserInfo",
-                "name": "",
-                "type": "tuple"
+                "internalType": "uint256",
+                "name": "points",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "walking",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "driving",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "publicTransport",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "carbonFootprintOffset",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "energyConverted",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "streak",
+                "type": "uint256"
             }
         ],
-        "stateMutability": "view",
+        "name": "updateUserInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -310,6 +360,220 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getUserInfo",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "points",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "walking",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "driving",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "publicTransport",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "carbonFootprintOffset",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "energyConverted",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "ID",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "streak",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct MainNetRegistry.UserInfo",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "idToAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "addressToUserInfo",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "points",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "walking",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "driving",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "publicTransport",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "carbonFootprintOffset",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "energyConverted",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "ID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "streak",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "addressToFriends",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "addressToMoneySpent",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "users",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "registered",
+                "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "points",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "balance",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newUpdater",
+                "type": "address"
+            }
+        ],
+        "name": "setUpdaterAddress",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     }
 ]

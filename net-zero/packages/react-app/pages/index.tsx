@@ -4,6 +4,7 @@ import { useWeb3 } from "@/contexts/useWeb3";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { parseEther } from 'viem';
+import JSONbig from 'json-bigint';
 
 export default function Home() {
     const {
@@ -14,12 +15,15 @@ export default function Home() {
         getNFTs,
         signTransaction,
         registerUser,
-        addUserPoints,
+        updateUserPoints,
         depositToUser,
         approveSpending,
         withdrawFromUser,
         getUserInfo,
         addFriend,
+        getMoneySpent,
+        getFriends,
+        updateUpdaterAddress,
     } = useWeb3();
 
     const [cUSDLoading, setCUSDLoading] = useState(false);
@@ -30,6 +34,9 @@ export default function Home() {
     const [friendAddress, setFriendAddress] = useState("");
     const [userInfo, setUserInfo] = useState<any>(null);
     const [isRegistered, setIsRegistered] = useState<boolean>(false);
+    const [moneySpent, setMoneySpent] = useState<number | null>(null);
+    const [friendsList, setFriendsList] = useState<string[]>([]);
+    const [newUpdaterAddress, setNewUpdaterAddress] = useState("");
 
     useEffect(() => {
         getUserAddress();
@@ -52,11 +59,18 @@ export default function Home() {
             const info = await getUserInfo(address!);
             setUserInfo(info);
             setIsRegistered(true);
+            const spentInWei = await getMoneySpent(address!);
+            const spentInCUSD = parseFloat(spentInWei) / 10**18;
+            console.log(spentInCUSD);
+            setMoneySpent(spentInCUSD);
+            const friends = await getFriends(address!);
+            setFriendsList(friends);
         } catch (error) {
             console.log("User is not registered");
             setIsRegistered(false);
         }
     };
+    
 
     async function sendingCUSD() {
         if (!address) {
@@ -105,7 +119,7 @@ export default function Home() {
         try {
             const receipt = await registerUser();
             console.log('User registered:', receipt);
-            checkUserRegistration(); // Check registration status again after registering
+            checkUserRegistration();
         } catch (error) {
             console.error('Error registering user:', error);
         } finally {
@@ -116,10 +130,10 @@ export default function Home() {
     async function handleAddPoints() {
         try {
             const pointsToAdd = 100;
-            const receipt = await addUserPoints(address!, pointsToAdd);
-            console.log('Points added:', receipt);
+            const receipt = await updateUserPoints(address!, pointsToAdd);
+            console.log('Points updated:', receipt);
         } catch (error) {
-            console.error('Error adding points:', error);
+            console.error('Error updating points:', error);
         }
     }
 
@@ -144,6 +158,10 @@ export default function Home() {
         }
     }
 
+    useEffect(() => {
+        console.log('Money Spent has changed:', moneySpent);
+    }, [moneySpent]);
+
     async function handleWithdraw() {
         try {
             const amountToWithdraw = '0.05';
@@ -158,8 +176,18 @@ export default function Home() {
         try {
             const receipt = await addFriend(friendAddress);
             console.log('Friend added:', receipt);
+            checkUserRegistration();
         } catch (error) {
             console.error('Error adding friend:', error);
+        }
+    }
+
+    async function handleUpdateUpdaterAddress() {
+        try {
+            const receipt = await updateUpdaterAddress(newUpdaterAddress);
+            console.log('Updater address updated:', receipt);
+        } catch (error) {
+            console.error('Error updating updater address:', error);
         }
     }
 
@@ -301,10 +329,43 @@ export default function Home() {
                                 />
                             </div>
 
+                            <div className="w-full px-3 mt-5">
+                                <input
+                                    type="text"
+                                    value={newUpdaterAddress}
+                                    onChange={(e) => setNewUpdaterAddress(e.target.value)}
+                                    placeholder="Enter New Updater Address"
+                                    className="border rounded p-2"
+                                />
+                                <PrimaryButton
+                                    onClick={handleUpdateUpdaterAddress}
+                                    title="Update Updater Address"
+                                    widthFull
+                                />
+                            </div>
+
                             {userInfo && (
                                 <div className="mt-5">
                                     <h3 className="font-bold">User Info:</h3>
-                                    <pre>{JSON.stringify(userInfo, null, 2)}</pre>
+                                    <pre>{JSONbig.stringify(userInfo, null, 2)}</pre>
+                                </div>
+                            )}
+
+                            {moneySpent !== null && (
+                                <div className="mt-5">
+                                    <h3 className="font-bold">Money Spent:</h3>
+                                    <p>{moneySpent} cUSD</p>
+                                </div>
+                            )}
+
+                            {friendsList.length > 0 && (
+                                <div className="mt-5">
+                                    <h3 className="font-bold">Friends:</h3>
+                                    <ul>
+                                        {friendsList.map((friend, index) => (
+                                            <li key={index}>{friend}</li>
+                                        ))}
+                                    </ul>
                                 </div>
                             )}
                         </>
