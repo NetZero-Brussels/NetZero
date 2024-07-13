@@ -1,7 +1,7 @@
 node_modules
 .env
 packages/*/.env
-
+/foundry/lib/*
 # IntelliJ project files
 *.iml
 *.ipr
