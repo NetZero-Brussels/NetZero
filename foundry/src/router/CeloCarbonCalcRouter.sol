@@ -2,44 +2,42 @@
 pragma solidity ^0.8.0;
 
 import {TokenRouter} from "@hyperlane-xyz/core/contracts/token/libs/TokenRouter.sol";
+import {GasRouter} from "@hyperlane-xyz/core/contracts/client/GasRouter.sol";
+import {RequestMessage} from "./message/RequestMessage.sol";
+import {ResponseMessage} from "./message/ResponseMessage.sol";
 
-contract CeloCarbonCalcRouter is TokenRouter {
+contract CeloCarbonCalcRouter is GasRouter {
+    using RequestMessage for bytes;
+    using ResponseMessage for bytes;
 
-    constructor(address _mailbox) TokenRouter(_mailbox) {
-        //0xEf9F292fcEBC3848bF4bB92a96a04F9ECBb78E59
+    constructor(address _mailbox) GasRouter(_mailbox) {}
+    event SendMessage(uint8 travelType, uint256 distance, uint256 duration, uint256 points);
+    event RecievedMessage(uint256 carbonOffset, uint256 energyConverted, uint256 points, uint256 origin ); 
+    //
+
+    function sendMessage(
+        uint8 _travelType,
+        uint256 _distance,
+        uint256 _duration,
+        uint256 _points
+    ) external {
+        bytes memory _message = RequestMessage.format(_travelType, _distance, _duration, _points);
+        emit SendMessage(_travelType, _distance, _duration, _points);
+        _GasRouter_dispatch(1, 0, _message, address(0));
     }
-
-    /**
-     * @dev Should transfer `_amountOrId` of tokens from `msg.sender` to this token router.
-     * @dev Called by `transferRemote` before message dispatch.
-     * @dev Optionally returns `metadata` associated with the transfer to be passed in message.
-     */
-    function _transferFromSender(
-        uint256 _amountOrId
-    ) internal virtual override returns (bytes memory metadata) {
-        return abi.encode(_amountOrId);
-    }
-
-    /**
-     * @dev Should transfer `_amountOrId` of tokens from this token router to `_recipient`.
-     * @dev Called by `handle` after message decoding.
-     * @dev Optionally handles `metadata` associated with transfer passed in message.
-     */
-    function _transferTo(
-        address _recipient,
-        uint256 _amountOrId,
-        bytes calldata metadata
+    
+    
+    // get the output of the calculation and send back to the user
+    function _handle(
+        uint32 _origin,
+        bytes32,
+        bytes calldata _message
     ) internal virtual override {
-        // do nothing
+        (uint256 _carbonOffset,
+        uint256 _energyConverted,
+        uint256 _points) = ResponseMessage.returnAll(_message);
+        emit RecievedMessage(_carbonOffset, _energyConverted, _points,_origin);
     }
 
-    /**
-     * @notice Returns the balance of `account` on this token router.
-     * @param account The address to query the balance of.
-     * @return The balance of `account`.
-     */
-    function balanceOf(address account) external view virtual override returns (uint256) {
-        return 0;
-    }
 
 }
