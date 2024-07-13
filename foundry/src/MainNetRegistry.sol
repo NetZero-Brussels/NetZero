@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract MainNetRegistry is ReentrancyGuard, Ownable {
@@ -51,7 +51,7 @@ contract MainNetRegistry is ReentrancyGuard, Ownable {
     uint256 private currentID = 1;
     mapping(address => User) private users;
 
-    constructor(address initialOwner) Ownable(initialOwner) {}
+    constructor(address initialOwner) Ownable() {}
 
     function initialize(address _cUSDAddress, address _updaterAddress) external onlyOwner {
         cUSDAddress = _cUSDAddress;
