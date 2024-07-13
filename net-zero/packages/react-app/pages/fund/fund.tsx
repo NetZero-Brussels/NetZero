@@ -1,4 +1,4 @@
-import IntroCard from "@/components/impact/fund/IntroCard";
+import IntroCard from "@/components/fund/IntroCard";
 
 
 export default function Fund() {
