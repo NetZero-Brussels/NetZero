@@ -11,21 +11,21 @@ export interface ProjectType {
 export const projectsData: ProjectType[] = [
     {
         id: 1,
-        title: 'Safe water project in Rwanda',
-        image: '/image1.png',
+        title: 'Project Alpha',
+        image: '/images/project-alpha.jpg',
         progress: 75,
         supporters: 120,
         timeLeft: '10 days left',
     },
     {
         id: 2,
-        title: 'Ripple Africa high impact cookstove project',
-        image: '/image2.png',
+        title: 'Project Beta',
+        image: '/images/project-beta.jpg',
         progress: 45,
-        supporters: 876,
+        supporters: 80,
         timeLeft: '20 days left',
     },
-    /* {
+    {
         id: 3,
         title: 'Project Gamma',
         image: '/images/project-gamma.jpg',
@@ -48,5 +48,5 @@ export const projectsData: ProjectType[] = [
         progress: 30,
         supporters: 60,
         timeLeft: '25 days left',
-    }, */
+    },
 ];
