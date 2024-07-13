@@ -20,14 +20,13 @@ const publicClient = createPublicClient({
 
 const cUSDTokenAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1";
 const MINIPAY_NFT_CONTRACT = "0xE8F4699baba6C86DA9729b1B0a1DA1Bd4136eFeF";
-const USER_REGISTRY_CONTRACT = "0xDB9EBe37196B2e2E8043338C482cf2B9C58C7b06";
+const USER_REGISTRY_CONTRACT = "0xdb9ebe37196b2e2e8043338c482cf2b9c58c7b06";
 
 export const useWeb3 = () => {
     const [address, setAddress] = useState<string | null>(null);
 
     const getUserAddress = async () => {
         if (typeof window !== "undefined" && window.ethereum) {
-            console.log("Hello");
             let walletClient = createWalletClient({
                 transport: custom(window.ethereum),
                 chain: celoAlfajores,
@@ -143,7 +142,7 @@ export const useWeb3 = () => {
 
         const tx = await walletClient.writeContract({
             address: USER_REGISTRY_CONTRACT,
-            abi: UserRegistryABI.abi,
+            abi: UserRegistryABI,
             functionName: "register",
             account: address,
         });
@@ -165,7 +164,7 @@ export const useWeb3 = () => {
 
         const tx = await walletClient.writeContract({
             address: USER_REGISTRY_CONTRACT,
-            abi: UserRegistryABI.abi,
+            abi: UserRegistryABI,
             functionName: "addPoints",
             account: address,
             args: [userAddress, points],
@@ -203,7 +202,6 @@ export const useWeb3 = () => {
         return receipt;
     };
 
-
     const depositToUser = async (amount: string) => {
         if (!amount) {
             throw new Error("Amount to deposit must be provided.");
@@ -220,7 +218,7 @@ export const useWeb3 = () => {
 
         const tx = await walletClient.writeContract({
             address: USER_REGISTRY_CONTRACT,
-            abi: UserRegistryABI.abi,
+            abi: UserRegistryABI,
             functionName: "deposit",
             account: address,
             args: [amountInWei.toString()],
@@ -249,10 +247,52 @@ export const useWeb3 = () => {
 
         const tx = await walletClient.writeContract({
             address: USER_REGISTRY_CONTRACT,
-            abi: UserRegistryABI.abi,
+            abi: UserRegistryABI,
             functionName: "withdraw",
             account: address,
             args: [amountInWei.toString()],
+        });
+
+        const receipt = await publicClient.waitForTransactionReceipt({
+            hash: tx,
+        });
+
+        return receipt;
+    };
+
+    const getUserInfo = async (userAddress: string) => {
+        let userRegistryContract = getContract({
+            abi: UserRegistryABI,
+            address: USER_REGISTRY_CONTRACT,
+            client: publicClient,
+        });
+
+        try {
+            const userInfo = await userRegistryContract.read.getUserInfo([
+                userAddress,
+            ]);
+
+            return userInfo;
+        } catch (error) {
+            console.error("Error fetching user info:", error);
+            throw error;
+        }
+    };
+
+    const addFriend = async (friendAddress: string) => {
+        let walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+
+        let [address] = await walletClient.getAddresses();
+
+        const tx = await walletClient.writeContract({
+            address: USER_REGISTRY_CONTRACT,
+            abi: UserRegistryABI,
+            functionName: "addFriend",
+            account: address,
+            args: [friendAddress],
         });
 
         const receipt = await publicClient.waitForTransactionReceipt({
@@ -271,8 +311,10 @@ export const useWeb3 = () => {
         signTransaction,
         registerUser,
         addUserPoints,
-        depositToUser,
         approveSpending,
+        depositToUser,
         withdrawFromUser,
+        getUserInfo,
+        addFriend,
     };
 };
