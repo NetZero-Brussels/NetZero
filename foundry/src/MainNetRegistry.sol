@@ -36,6 +36,7 @@ contract MainNetRegistry is ReentrancyGuard, Ownable {
     event Deposit(address indexed user, uint256 amount);
     event Withdrawal(address indexed user, uint256 amount);
     event UserInfoUpdated(address indexed user);
+    event UpdaterAddressUpdated(address indexed newUpdater);
 
     modifier onlyRegistered() {
         require(users[msg.sender].registered, "User is not registered");
@@ -167,5 +168,11 @@ contract MainNetRegistry is ReentrancyGuard, Ownable {
     function getUserInfo(address user) external view returns (UserInfo memory) {
         require(users[user].registered, "User is not registered");
         return addressToUserInfo[user];
+    }
+
+    function setUpdaterAddress(address newUpdater) external onlyOwner {
+        require(newUpdater != address(0), "New updater address cannot be zero address");
+        updaterAddress = newUpdater;
+        emit UpdaterAddressUpdated(newUpdater);
     }
 }

@@ -23,6 +23,7 @@ export default function Home() {
         addFriend,
         getMoneySpent,
         getFriends,
+        updateUpdaterAddress,
     } = useWeb3();
 
     const [cUSDLoading, setCUSDLoading] = useState(false);
@@ -35,6 +36,7 @@ export default function Home() {
     const [isRegistered, setIsRegistered] = useState<boolean>(false);
     const [moneySpent, setMoneySpent] = useState<number | null>(null);
     const [friendsList, setFriendsList] = useState<string[]>([]);
+    const [newUpdaterAddress, setNewUpdaterAddress] = useState("");
 
     useEffect(() => {
         getUserAddress();
@@ -167,9 +169,18 @@ export default function Home() {
         try {
             const receipt = await addFriend(friendAddress);
             console.log('Friend added:', receipt);
-            checkUserRegistration(); // Refresh user info to get updated friends list
+            checkUserRegistration();
         } catch (error) {
             console.error('Error adding friend:', error);
+        }
+    }
+
+    async function handleUpdateUpdaterAddress() {
+        try {
+            const receipt = await updateUpdaterAddress(newUpdaterAddress);
+            console.log('Updater address updated:', receipt);
+        } catch (error) {
+            console.error('Error updating updater address:', error);
         }
     }
 
@@ -307,6 +318,21 @@ export default function Home() {
                                 <PrimaryButton
                                     onClick={handleAddFriend}
                                     title="Add Friend"
+                                    widthFull
+                                />
+                            </div>
+
+                            <div className="w-full px-3 mt-5">
+                                <input
+                                    type="text"
+                                    value={newUpdaterAddress}
+                                    onChange={(e) => setNewUpdaterAddress(e.target.value)}
+                                    placeholder="Enter New Updater Address"
+                                    className="border rounded p-2"
+                                />
+                                <PrimaryButton
+                                    onClick={handleUpdateUpdaterAddress}
+                                    title="Update Updater Address"
                                     widthFull
                                 />
                             </div>
