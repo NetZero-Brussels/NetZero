@@ -9,6 +9,8 @@ import { WagmiProvider, createConfig, http } from "wagmi";
 import { celo, celoAlfajores } from "wagmi/chains";
 import Layout from "../components/Layout";
 import "../styles/globals.css";
+import { ApolloProvider } from "@apollo/client";
+import client from "contexts/apollo-client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -42,7 +44,9 @@ function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
           <Layout>
-            <Component {...pageProps} />
+            <ApolloProvider client={client}>
+              <Component {...pageProps} />
+            </ApolloProvider>
           </Layout>
         </RainbowKitProvider>
       </QueryClientProvider>
