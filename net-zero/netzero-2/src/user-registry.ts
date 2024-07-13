@@ -1,15 +1,13 @@
 import {
   UserRegistered as UserRegisteredEvent,
-  PointsAdded as PointsAddedEvent,
-  PointsSubtracted as PointsSubtractedEvent,
+  PointsUpdated as PointsUpdatedEvent,
   Deposit as DepositEvent,
   Withdrawal as WithdrawalEvent,
   UserInfoUpdated as UserInfoUpdatedEvent
-} from "../generated/MainNetRegistry/MainNetRegistry"
+} from "../generated/UserRegistry/UserRegistry"
 import {
   UserRegistered,
-  PointsAdded,
-  PointsSubtracted,
+  PointsUpdated,
   Deposit,
   Withdrawal,
   UserInfoUpdated
@@ -29,22 +27,8 @@ export function handleUserRegistered(event: UserRegisteredEvent): void {
   entity.save()
 }
 
-export function handlePointsAdded(event: PointsAddedEvent): void {
-  let entity = new PointsAdded(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.user = event.params.user
-  entity.points = event.params.points
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handlePointsSubtracted(event: PointsSubtractedEvent): void {
-  let entity = new PointsSubtracted(
+export function handlePointsUpdated(event: PointsUpdatedEvent): void {
+  let entity = new PointsUpdated(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.user = event.params.user

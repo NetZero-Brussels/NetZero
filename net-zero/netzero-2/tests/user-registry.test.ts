@@ -8,9 +8,9 @@ import {
 } from "matchstick-as/assembly/index"
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { UserRegistered } from "../generated/schema"
-import { UserRegistered as UserRegisteredEvent } from "../generated/MainNetRegistry/MainNetRegistry"
-import { handleUserRegistered } from "../src/main-net-registry"
-import { createUserRegisteredEvent } from "./main-net-registry-utils"
+import { UserRegistered as UserRegisteredEvent } from "../generated/UserRegistry/UserRegistry"
+import { handleUserRegistered } from "../src/user-registry"
+import { createUserRegisteredEvent } from "./user-registry-utils"
 
 // Tests structure (matchstick-as >=0.5.0)
 // https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0

@@ -1,22 +1,12 @@
 type UserRegistered @entity(immutable: true) {
   id: Bytes!
   user: Bytes! # address
-  ID: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type PointsAdded @entity(immutable: true) {
-  id: Bytes!
-  user: Bytes! # address
-  points: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type PointsSubtracted @entity(immutable: true) {
+type PointsUpdated @entity(immutable: true) {
   id: Bytes!
   user: Bytes! # address
   points: BigInt! # uint256
