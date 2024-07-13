@@ -40,3 +40,5 @@ type UserInfoUpdated @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+
