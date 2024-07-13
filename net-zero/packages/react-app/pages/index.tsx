@@ -3,6 +3,7 @@ import PrimaryButton from "@/components/Button";
 import { useWeb3 } from "@/contexts/useWeb3";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { parseEther } from 'viem';
 
 export default function Home() {
     const {
@@ -12,49 +13,71 @@ export default function Home() {
         mintMinipayNFT,
         getNFTs,
         signTransaction,
+        registerUser,
+        addUserPoints,
+        depositToUser,
+        approveSpending,
+        withdrawFromUser,
+        getUserInfo,
+        addFriend,
     } = useWeb3();
+
     const [cUSDLoading, setCUSDLoading] = useState(false);
     const [nftLoading, setNFTLoading] = useState(false);
     const [signingLoading, setSigningLoading] = useState(false);
     const [userOwnedNFTs, setUserOwnedNFTs] = useState<string[]>([]);
     const [tx, setTx] = useState<any>(undefined);
+    const [friendAddress, setFriendAddress] = useState("");
+    const [userInfo, setUserInfo] = useState<any>(null);
 
     useEffect(() => {
         getUserAddress();
     }, []);
 
     useEffect(() => {
-        const getData = async () => {
+        const fetchData = async () => {
             const tokenURIs = await getNFTs();
             setUserOwnedNFTs(tokenURIs);
         };
+
         if (address) {
-            getData();
+            fetchData();
+            fetchUserInfo();
         }
     }, [address]);
 
-    async function sendingCUSD() {
+    const fetchUserInfo = async () => {
         if (address) {
-            setSigningLoading(true);
-            try {
-                const tx = await sendCUSD(address, "0.1");
-                setTx(tx);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setSigningLoading(false);
-            }
+            const info = await getUserInfo(address);
+            setUserInfo(info);
+        }
+    };
+
+    async function sendingCUSD() {
+        if (!address) {
+            console.error('Address is not available.');
+            return;
+        }
+
+        setCUSDLoading(true);
+        try {
+            const tx = await sendCUSD(address, "0.1");
+            setTx(tx);
+        } catch (error) {
+            console.error('Error sending CUSD:', error);
+        } finally {
+            setCUSDLoading(false);
         }
     }
 
     async function signMessage() {
-        setCUSDLoading(true);
+        setSigningLoading(true);
         try {
             await signTransaction();
         } catch (error) {
-            console.log(error);
+            console.error('Error signing message:', error);
         } finally {
-            setCUSDLoading(false);
+            setSigningLoading(false);
         }
     }
 
@@ -66,9 +89,71 @@ export default function Home() {
             setUserOwnedNFTs(tokenURIs);
             setTx(tx);
         } catch (error) {
-            console.log(error);
+            console.error('Error minting NFT:', error);
         } finally {
             setNFTLoading(false);
+        }
+    }
+
+    async function handleRegister() {
+        setNFTLoading(true);
+        try {
+            const receipt = await registerUser();
+            console.log('User registered:', receipt);
+        } catch (error) {
+            console.error('Error registering user:', error);
+        } finally {
+            setNFTLoading(false);
+        }
+    }
+
+    async function handleAddPoints() {
+        try {
+            const pointsToAdd = 100;
+            const receipt = await addUserPoints(address!, pointsToAdd);
+            console.log('Points added:', receipt);
+        } catch (error) {
+            console.error('Error adding points:', error);
+        }
+    }
+
+    async function handleApproval() {
+        try {
+            const amountToDeposit = '10';
+            const amountInWei = parseEther(amountToDeposit);
+            const receipt = await approveSpending(amountInWei.toString());
+            console.log('Approval done:', receipt);
+        } catch (error) {
+            console.error('Error approving spending:', error);
+        }
+    }
+
+    async function handleDeposit() {
+        try {
+            const amountToDeposit = '0.05';
+            const receipt = await depositToUser(amountToDeposit.toString());
+            console.log('Deposited:', receipt);
+        } catch (error) {
+            console.error('Error depositing:', error);
+        }
+    }
+
+    async function handleWithdraw() {
+        try {
+            const amountToWithdraw = '0.05';
+            const receipt = await withdrawFromUser(amountToWithdraw.toString());
+            console.log('Withdrawn:', receipt);
+        } catch (error) {
+            console.error('Error withdrawing:', error);
+        }
+    }
+
+    async function handleAddFriend() {
+        try {
+            const receipt = await addFriend(friendAddress);
+            console.log('Friend added:', receipt);
+        } catch (error) {
+            console.error('Error adding friend:', error);
         }
     }
 
@@ -150,6 +235,68 @@ export default function Home() {
                             widthFull
                         />
                     </div>
+
+                    <div className="w-full px-3 mt-5">
+                        <PrimaryButton
+                            onClick={handleRegister}
+                            title="Register User"
+                            widthFull
+                        />
+                    </div>
+
+                    <div className="w-full px-3 mt-5">
+                        <PrimaryButton
+                            onClick={handleAddPoints}
+                            title="Add Points"
+                            widthFull
+                        />
+                    </div>
+
+                    <div className="w-full px-3 mt-5">
+                        <PrimaryButton
+                            onClick={handleApproval}
+                            title="Approve Deposit"
+                            widthFull
+                        />
+                    </div>
+
+                    <div className="w-full px-3 mt-5">
+                        <PrimaryButton
+                            onClick={handleDeposit}
+                            title="Deposit"
+                            widthFull
+                        />
+                    </div>
+
+                    <div className="w-full px-3 mt-5">
+                        <PrimaryButton
+                            onClick={handleWithdraw}
+                            title="Withdraw"
+                            widthFull
+                        />
+                    </div>
+
+                    <div className="w-full px-3 mt-5">
+                        <input
+                            type="text"
+                            value={friendAddress}
+                            onChange={(e) => setFriendAddress(e.target.value)}
+                            placeholder="Enter Friend's Address"
+                            className="border rounded p-2"
+                        />
+                        <PrimaryButton
+                            onClick={handleAddFriend}
+                            title="Add Friend"
+                            widthFull
+                        />
+                    </div>
+
+                    {userInfo && (
+                        <div className="mt-5">
+                            <h3 className="font-bold">User Info:</h3>
+                            <pre>{JSON.stringify(userInfo, null, 2)}</pre>
+                        </div>
+                    )}
                 </>
             )}
         </div>
