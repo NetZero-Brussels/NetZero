@@ -12,7 +12,7 @@ export const projectsData: ProjectType[] = [
     {
         id: 1,
         title: 'Project Alpha',
-        image: '/images/project-alpha.jpg',
+        image: '/image1.png',
         progress: 75,
         supporters: 120,
         timeLeft: '10 days left',
@@ -20,7 +20,7 @@ export const projectsData: ProjectType[] = [
     {
         id: 2,
         title: 'Project Beta',
-        image: '/images/project-beta.jpg',
+        image: '/image2.png',
         progress: 45,
         supporters: 80,
         timeLeft: '20 days left',
