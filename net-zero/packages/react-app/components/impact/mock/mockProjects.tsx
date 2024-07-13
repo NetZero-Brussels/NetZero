@@ -14,7 +14,7 @@ export const projectsData: ProjectType[] = [
         title: 'Safe water project in Rwanda',
         image: '/image1.png',
         progress: 75,
-        supporters: 1297,
+        supporters: 120,
         timeLeft: '10 days left',
     },
     {
