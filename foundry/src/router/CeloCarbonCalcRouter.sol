@@ -49,7 +49,6 @@ contract CeloCarbonCalcRouter is GasRouter {
 
     // Allow contract to receive Ether
     receive() external payable {
-        
     }
 
 }
