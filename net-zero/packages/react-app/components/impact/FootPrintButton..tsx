@@ -151,7 +151,8 @@ export function FootPrintButton() {
                 variant={isRecording ? 'contained' : 'contained'}
                 color={isRecording ? 'error' : 'success'}
                 onClick={isRecording ? handleStopRecording : toggleRecording}
-                style={{ width: '295px', height: '40px' }}
+                style={{ width: 'fill', height: '40px' }}
+                className='bg-[#A5D6BF] text-white items-center w-[411px]'
             >
                 {isRecording ? 'Stop Recording' : 'Record your footprint'}
             </Button>

@@ -3,14 +3,21 @@ import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import NetZeroIcon from "../public/NetZeroIcon.svg";
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 
 export default function Header() {
+  const router = useRouter();
+
+  const goToRoot = () => {
+    router.push('/');
+  };
+
   return (
     <Disclosure as="nav" className="">
       {({ open }) => (
         <>
-          <div className="flex w-full px-[80px] py-0 pt-4 justify-center items-center gap-[12px]">
+          <div className="flex w-full px-[80px] py-0 pt-4 justify-center items-center gap-[12px]" onClick={goToRoot}>
             <div className="">
               <Image className="w-[42px] " priority src={NetZeroIcon} alt="NetZero Icon"></Image>
             </div>
