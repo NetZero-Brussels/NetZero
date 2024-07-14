@@ -11,7 +11,7 @@ export interface ProjectType {
 export const projectsData: ProjectType[] = [
     {
         id: 1,
-        title: 'Project Alpha',
+        title: 'Safe water project in Rwanda',
         image: '/image1.png',
         progress: 75,
         supporters: 120,
@@ -19,7 +19,7 @@ export const projectsData: ProjectType[] = [
     },
     {
         id: 2,
-        title: 'Project Beta',
+        title: 'Africa cookstove project',
         image: '/image2.png',
         progress: 45,
         supporters: 80,
@@ -27,24 +27,24 @@ export const projectsData: ProjectType[] = [
     },
     {
         id: 3,
-        title: 'Project Gamma',
-        image: '/images/project-gamma.jpg',
+        title: 'Zambia Safe Water',
+        image: '/image3.png',
         progress: 60,
         supporters: 95,
         timeLeft: '15 days left',
     },
     {
         id: 4,
-        title: 'Project Delta',
-        image: '/images/project-delta.jpg',
+        title: 'Cookstove Project in DRC',
+        image: '/image4.png',
         progress: 90,
         supporters: 150,
         timeLeft: '5 days left',
     },
     {
         id: 5,
-        title: 'Project Epsilon',
-        image: '/images/project-epsilon.jpg',
+        title: 'Protect the native forest',
+        image: '/image5.png',
         progress: 30,
         supporters: 60,
         timeLeft: '25 days left',
