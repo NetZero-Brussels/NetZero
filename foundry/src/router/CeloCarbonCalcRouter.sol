@@ -12,9 +12,10 @@ contract CeloCarbonCalcRouter is GasRouter {
 
     constructor(address _mailbox) GasRouter(_mailbox) {}
     event SendMessage(uint8 travelType, uint256 distance, uint256 duration, uint256 points);
-    event RecievedMessage(uint256 carbonOffset, uint256 energyConverted, uint256 points, uint256 origin ); 
-    //
+    event RecievedMessage(uint256 carbonOffset, uint256 energyConverted, uint256 points, uint256 origin );
 
+
+    //input for the calculation
     function sendMessage(
         uint8 _travelType,
         uint256 _distance,
@@ -23,7 +24,7 @@ contract CeloCarbonCalcRouter is GasRouter {
     ) external {
         bytes memory _message = RequestMessage.format(_travelType, _distance, _duration, _points);
         emit SendMessage(_travelType, _distance, _duration, _points);
-        _GasRouter_dispatch(1, 0, _message, address(0));
+        _GasRouter_dispatch(421614, 10000000000000000, _message, address(0));
     }
     
     
@@ -38,6 +39,5 @@ contract CeloCarbonCalcRouter is GasRouter {
         uint256 _points) = ResponseMessage.returnAll(_message);
         emit RecievedMessage(_carbonOffset, _energyConverted, _points,_origin);
     }
-
 
 }

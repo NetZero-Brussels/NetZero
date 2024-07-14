@@ -1,48 +1,61 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {TokenRouter} from "@hyperlane-xyz/core/contracts/token/libs/TokenRouter.sol";
+import {GasRouter} from "@hyperlane-xyz/core/contracts/client/GasRouter.sol";
+import {RequestMessage} from "./message/RequestMessage.sol";
+import {ResponseMessage} from "./message/ResponseMessage.sol";
+import {ICalculate} from "./calculate/ICalculate.sol";
 
-contract ArbitrumCarbonCalcRouter is TokenRouter {
+contract ArbitrumCarbonCalcRouter is GasRouter {
 
-    constructor(address _mailbox) TokenRouter(_mailbox) {
-        // 0x598facE78a4302f11E3de0bee1894Da0b2Cb71F8
+    using RequestMessage for bytes;
+    using ResponseMessage for bytes;
+
+    address public calculaterAddress;
+    address public hookAuthorityAddress;
+    address public destinationAddress;
+
+    constructor(address _mailbox, address _destinationAddress, address _calculaterAddress) GasRouter(_mailbox) {
+
+        if (_destinationAddress == address(0)) {
+            revert("ArbitrumCarbonCalcRouter: destination address is zero");
+        }
+
+        if (_calculaterAddress == address(0)) {
+            revert("ArbitrumCarbonCalcRouter: calculater address is zero");
+        }
+
+        destinationAddress = _destinationAddress;
+        calculaterAddress = _calculaterAddress;
     }
 
-    // handle
+    event ReceivedMessage(uint8 travelType, uint256 distance, uint256 duration, uint256 points,uint256 _origin);
+    event SendMessage(uint256 carbonOffset, uint256 energyConverted, uint256 points);
 
-    // dispatch
+    function sendMessage(
+        bytes memory _message
+    ) internal {
 
-    /**
-     * @dev Should transfer `_amountOrId` of tokens from `msg.sender` to this token router.
-     * @dev Called by `transferRemote` before message dispatch.
-     * @dev Optionally returns `metadata` associated with the transfer to be passed in message.
-     */
-    function _transferFromSender(
-        uint256 _amountOrId
-    ) internal virtual override returns (bytes memory metadata) {
-        return abi.encode(_amountOrId);
+        (uint256 _carbonOffset, uint256 _energyConverted, uint256 _points) = ResponseMessage.returnAll(_message);
+        emit SendMessage(_carbonOffset, _energyConverted, _points);
+        _GasRouter_dispatch(44787, 10000000000000000, _message, hookAuthorityAddress);
     }
 
-    /**
-     * @dev Should transfer `_amountOrId` of tokens from this token router to `_recipient`.
-     * @dev Called by `handle` after message decoding.
-     * @dev Optionally handles `metadata` associated with transfer passed in message.
-     */
-    function _transferTo(
-        address _recipient,
-        uint256 _amountOrId,
-        bytes calldata metadata
+    // get the output of the calculation and send back to the user
+    function _handle(
+        uint32 _origin,
+        bytes32,
+        bytes calldata _message
     ) internal virtual override {
-        // do nothing
-    }
 
-    /**
-     * @notice Returns the balance of `account` on this token router.
-     * @param account The address to query the balance of.
-     * @return The balance of `account`.
-     */
-    function balanceOf(address account) external view virtual override returns (uint256) {
-        return 0;
+        (uint8 travelType, uint256 distance, uint256 duration, uint256 points) = RequestMessage.returnAll(_message);
+        emit ReceivedMessage(travelType, distance, duration, points,_origin);
+
+        // call the calculater contract
+        ICalculate calculater = ICalculate(calculaterAddress);
+        bytes memory response = calculater.calculate(travelType, distance, duration, points);
+
+        // send the response back to the user on celo chain
+        sendMessage(response);
     }
 }
