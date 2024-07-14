@@ -1,11 +1,11 @@
 // components/ProjectList.tsx
-;
 import { Box, Typography, Card, CardMedia, CardContent, CircularProgress, CircularProgressProps, CardActionArea } from '@mui/material';
 import { purchases, GreenTravelDiscount } from './mock/mockPoints';
 import Image from 'next/image';
-
+import handleDeposit from "../../pages/index_old";
 
 export function SpendButton() {
+
     return (
         <div className="flex px-[24px] py-[11px] flex-col justify-center items-center self-stretch bg-[#A5D6BF]">
             <p className="font-semibold">Spend your points</p>
@@ -38,7 +38,8 @@ export function PointPurchaseList() {
                         <SpendButton />
                     </CardActionArea>
                 </Card>
-            ))}
-        </div>
+            ))
+            }
+        </div >
     );
 }
