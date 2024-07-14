@@ -11,7 +11,7 @@ export default function Header() {
         <>
           <div className="flex w-full px-[80px] py-0 justify-center items-center gap-[12px]">
             <div className="">
-              <Image priority src={NetZeroIcon} alt="Follow us on Twitter"></Image>
+              <Image priority src={NetZeroIcon} alt="NetZero Icon"></Image>
             </div>
             <div className="text-center font-[futura] text-[24px] not-italic font-bold leading-[48px] text-[#A5D6BF]">
               <h1>Net Zero</h1>
