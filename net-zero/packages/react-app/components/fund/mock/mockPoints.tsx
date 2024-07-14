@@ -14,17 +14,17 @@ export const purchases: GreenTravelDiscount[] = [
     },
     {
         id: 2,
-        title: 'Free Bicycle Rentals',
-        photo: '/images/bicycle-rentals.jpg',
+        title: 'Deutsche bahn 25% off',
+        photo: '/spend2.jpg',
     },
     {
         id: 3,
-        title: '30% Sustainable Tours',
-        photo: '/images/sustainable-tours.jpg',
+        title: 'ÖBB 5 Euro off',
+        photo: '/spend3.png',
     },
     {
         id: 4,
-        title: 'Green Experiences',
-        photo: '/images/green-experiences.jpg',
+        title: 'Green travel adventure',
+        photo: '/spend4.png',
     },
 ];

@@ -10,11 +10,11 @@ export default function Header() {
     <Disclosure as="nav" className="">
       {({ open }) => (
         <>
-          <div className="flex w-full px-[80px] py-0 justify-center items-center gap-[12px]">
+          <div className="flex w-full px-[80px] py-0 pt-4 justify-center items-center gap-[12px]">
             <div className="">
-              <Image priority src={NetZeroIcon} alt="NetZero Icon"></Image>
+              <Image className="w-[42px] " priority src={NetZeroIcon} alt="NetZero Icon"></Image>
             </div>
-            <div className="text-center font-[futura] text-[24px] not-italic font-bold leading-[48px] text-[#A5D6BF]">
+            <div className="text-center font-[futura] text-[32px] not-italic font-bold leading-[48px] text-[#A5D6BF]">
               <h1>Net Zero</h1>
             </div>
           </div>
