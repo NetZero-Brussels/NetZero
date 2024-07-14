@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function LandingPage() {
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center mt-20">
       <div className="absolute inset-0 z-[-1]">
         <Image src={bg} alt="bg" layout="fill" objectFit="cover" />
       </div>
