@@ -40,4 +40,16 @@ contract CeloCarbonCalcRouter is GasRouter {
         emit RecievedMessage(_carbonOffset, _energyConverted, _points,_origin);
     }
 
+    // Transfer balance back to owner
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No funds to withdraw");
+        payable(owner()).transfer(balance);
+    }
+
+    // Allow contract to receive Ether
+    receive() external payable {
+        
+    }
+
 }

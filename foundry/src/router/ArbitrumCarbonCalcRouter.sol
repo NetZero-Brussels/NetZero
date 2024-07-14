@@ -58,4 +58,16 @@ contract ArbitrumCarbonCalcRouter is GasRouter {
         // send the response back to the user on celo chain
         sendMessage(response);
     }
+
+    // Transfer balance back to owner
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No funds to withdraw");
+        payable(owner()).transfer(balance);
+    }
+
+    // Allow contract to receive Ether
+    receive() external payable {       
+    }
+    
 }
