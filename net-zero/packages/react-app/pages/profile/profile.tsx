@@ -7,7 +7,7 @@ import { WalletCard } from '../../components/profile/WalletCard';
 const Profile = () => {
 
     return (
-        <div className='flex flex-col gap-[32px]'>
+        <div className='flex flex-col gap-[32px] mb-16'>
             <ProfileCard />
             <WalletCard />
             <InfoCard />
