@@ -1,19 +1,4 @@
 //!
-//! Stylus Hello World
-//!
-//! The following contract implements the Counter example from Foundry.
-//!
-//! ```
-//! contract Counter {
-//!     uint256 public number;
-//!     function setNumber(uint256 newNumber) public {
-//!         number = newNumber;
-//!     }
-//!     function increment() public {
-//!         number++;
-//!     }
-//! }
-//! ```
 //!
 //! The program is ABI-equivalent with Solidity, which means you can call it from both Solidity and Rust.
 //! To do this, run `cargo stylus export-abi`.
@@ -122,7 +107,7 @@ impl Counter {
     }
 
     /// Calculate carbon footprint and energy converted from ABI-encoded input
-    pub fn calculate(&mut self, encoded_data: Vec<u8>) -> (f64, f64) {
+    pub fn calculate(&mut self, encoded_data: Vec<u8>) -> (U256, U256) {
         // Decode the ABI-encoded input
         let params = vec![
             ParamType::Uint(8),
@@ -144,7 +129,15 @@ impl Counter {
 
         // web_sys::console::log_1(&format!("Carbon Footprint: {} kg CO2e", carbon_footprint).into());
         // web_sys::console::log_1(&format!("Energy Converted: {} MJ", energy_converted).into());
+        
+        // Convert f64 results to U256 with a scale factor (e.g., 1e6 for 6 decimal places)
+        let scale_factor = 1_000_000.0;
+        let carbon_footprint_scaled = (carbon_footprint * scale_factor) as u64;
+        let energy_converted_scaled = (energy_converted * scale_factor) as u64;
 
-        (carbon_footprint, energy_converted)
+        let carbon_footprint_u256 = U256::from(carbon_footprint_scaled);
+        let energy_converted_u256 = U256::from(energy_converted_scaled);
+
+        (carbon_footprint_u256, energy_converted_u256)
     }
 }
