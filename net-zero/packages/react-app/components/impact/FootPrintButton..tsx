@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useWeb3 } from '@/contexts/useWeb3';
 
 interface Position {
@@ -26,6 +26,7 @@ export function FootPrintButton() {
     const [duration, setDuration] = useState(0);
     const [transportType, setTransportType] = useState<number | null>(null);
     const [showTransportPopup, setShowTransportPopup] = useState(false);
+    const [showResultPopup, setShowResultPopup] = useState(false);
     const [userInfo, setUserInfo] = useState<any>(null);
     const [points, setPoints] = useState<number | null>(null);
     const [isRegistered, setIsRegistered] = useState<boolean>(false);
@@ -47,8 +48,7 @@ export function FootPrintButton() {
     const checkUserRegistration = async () => {
         try {
             const info = await getUserInfo(address!);
-            setPoints(Number(info.points))
-            console.log(Number(info.points))
+            setPoints(Number(info.points));
             setUserInfo(info);
             setIsRegistered(true);
         } catch (error) {
@@ -56,7 +56,6 @@ export function FootPrintButton() {
             setIsRegistered(false);
         }
     };
-
 
     const getLocation = () => {
         if (navigator.geolocation) {
@@ -109,9 +108,8 @@ export function FootPrintButton() {
         }
 
         try {
-            console.log(distance, duration, transportType, points)
+            setShowResultPopup(true);
             await submitRecordingToContract(distance, duration, transportType, points);
-            alert('Recording submitted successfully!');
         } catch (error) {
             console.error('Error submitting recording:', error);
         }
@@ -155,21 +153,32 @@ export function FootPrintButton() {
             >
                 {isRecording ? 'Stop Recording' : 'Record your footprint'}
             </Button>
-
-            <Modal open={showTransportPopup} onClose={() => setShowTransportPopup(false)}>
-                <div style={{ padding: '20px', backgroundColor: 'white', borderRadius: '8px', margin: '50px' }}>
-                    <h3>Select Transport Type:</h3>
+            {position.lat !== null && position.lng !== null ? (
+                <p>
+                    Latitude: {position.lat}, Longitude: {position.lng}, at: {now.toISOString()}
+                </p>
+            ) : (
+                <p>No position available</p>
+            )}
+            {error && <p>Error: {error}</p>}
+            <h3>Distance: {distance.toFixed(2)} meters</h3>
+            <h3>Duration: {duration} seconds</h3>
+            <Dialog open={showTransportPopup} onClose={() => setShowTransportPopup(false)}>
+                <DialogTitle>Select Transport Type</DialogTitle>
+                <DialogContent>
                     <FormControl fullWidth margin="normal">
                         <InputLabel>Transport Type</InputLabel>
                         <Select
                             value={transportType || ''}
                             onChange={(e) => setTransportType(Number(e.target.value))}
                         >
-                            <MenuItem value="1">Walking</MenuItem>
-                            <MenuItem value="2">Car transport</MenuItem>
-                            <MenuItem value="3">Subway</MenuItem>
+                            <MenuItem value={1}>Walking</MenuItem>
+                            <MenuItem value={2}>Car transport</MenuItem>
+                            <MenuItem value={3}>Subway</MenuItem>
                         </Select>
                     </FormControl>
+                </DialogContent>
+                <DialogActions>
                     <Button
                         variant="contained"
                         color="primary"
@@ -184,12 +193,26 @@ export function FootPrintButton() {
                         variant="outlined"
                         color="secondary"
                         onClick={() => setShowTransportPopup(false)}
-                        style={{ marginLeft: '10px' }}
                     >
                         Cancel
                     </Button>
-                </div>
-            </Modal>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={showResultPopup} onClose={() => setShowResultPopup(false)}>
+                <DialogTitle>Your Journey</DialogTitle>
+                <DialogContent>
+                    <p>Congratulations! You traveled {distance.toFixed(2)} meters in {duration} seconds.</p>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setShowResultPopup(false)}
+                    >
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
-};
+}
