@@ -29,8 +29,10 @@ extern crate alloc;
 #[global_allocator]
 static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
+use serde::{Deserialize, Serialize};
 /// Import items from the SDK. The prelude contains common traits and macros.
 use stylus_sdk::{alloy_primitives::U256, prelude::*};
+use ethabi::{decode, ParamType};
 
 // Define some persistent storage using the Solidity ABI.
 // `Counter` will be the entrypoint.
@@ -41,6 +43,55 @@ sol_storage! {
     }
 }
 
+/// Emission factors struct
+#[derive(Serialize, Deserialize)]
+pub struct EmissionFactors {
+    car: f64,
+    walking: f64,
+    bike: f64,
+    subway: f64,
+}
+
+/// Carbon footprint calculator
+#[derive(Serialize, Deserialize)]
+pub struct CarbonFootprintCalculator {
+    emission_factors: EmissionFactors,
+}
+
+impl CarbonFootprintCalculator {
+    pub fn new(
+        car_factor: f64, walking_factor: f64, bike_factor: f64, subway_factor: f64
+    ) -> CarbonFootprintCalculator {
+        CarbonFootprintCalculator {
+            emission_factors: EmissionFactors {
+                car: car_factor,
+                walking: walking_factor,
+                bike: bike_factor,
+                subway: subway_factor,
+            },
+        }
+    }
+
+    pub fn calculate_carbon_footprint(&self, distance: f64, travel_type: u8) -> f64 {
+        match travel_type {
+            1 => distance * self.emission_factors.car,
+            2 => distance * self.emission_factors.walking,
+            3 => distance * self.emission_factors.bike,
+            4 => distance * self.emission_factors.subway,
+            _ => panic!("Invalid travel type"),
+        }
+    }
+
+    pub fn calculate_energy_converted(&self, distance: f64, travel_type: u8) -> f64 {
+        const FUEL_EMISSION_FACTOR: f64 = 2.31; // kg CO2e per liter
+        const FUEL_ENERGY_DENSITY: f64 = 34.2; // MJ per liter
+
+        let carbon_footprint = self.calculate_carbon_footprint(distance, travel_type);
+        let fuel_used = carbon_footprint / FUEL_EMISSION_FACTOR;
+        fuel_used * FUEL_ENERGY_DENSITY
+    }
+}
+
 /// Declare that `Counter` is a contract with the following external methods.
 #[external]
 impl Counter {
@@ -48,15 +99,6 @@ impl Counter {
     pub fn number(&self) -> U256 {
         self.number.get()
     }
-
-    ///arbitrum mailbox: 0x2Ab42F5d4AA4a988E6027D5C31C9d61becc6977E
-    ///celo mailbox: 0xEf9F292fcEBC3848bF4bB92a96a04F9ECBb78E59
-    
-    // pub fn send_message(&self, message: String) {
-    //     // let mailbox = Address::from_str("0x2Ab42F5d4AA4a988E6027D5C31C9d61becc6977E").unwrap();
-    //     // let message = message.as_bytes().to_vec();
-    //     // let _ = stylus_sdk::send_message(mailbox, message);
-    // }
 
     /// Sets a number in storage to a user-specified value.
     pub fn set_number(&mut self, new_number: U256) {
@@ -77,5 +119,32 @@ impl Counter {
     pub fn increment(&mut self) {
         let number = self.number.get();
         self.set_number(number + U256::from(1));
+    }
+
+    /// Calculate carbon footprint and energy converted from ABI-encoded input
+    pub fn calculate(&mut self, encoded_data: Vec<u8>) -> (f64, f64) {
+        // Decode the ABI-encoded input
+        let params = vec![
+            ParamType::Uint(8),
+            ParamType::Uint(256),
+            ParamType::Uint(256),
+            ParamType::Uint(256),
+        ];
+        let decoded = decode(&params, &encoded_data).expect("Failed to decode input");
+
+        let travel_type: u8 = decoded[0].clone().into_uint().unwrap().as_u64() as u8;
+        let distance: u64 = decoded[1].clone().into_uint().unwrap().as_u64();
+        let _duration: u64 = decoded[2].clone().into_uint().unwrap().as_u64();
+        let _points: u64 = decoded[3].clone().into_uint().unwrap().as_u64();
+
+        let calculator = CarbonFootprintCalculator::new(0.12, 0.0, 0.09, 0.03);
+
+        let carbon_footprint = calculator.calculate_carbon_footprint(distance as f64, travel_type);
+        let energy_converted = calculator.calculate_energy_converted(distance as f64, travel_type);
+
+        // web_sys::console::log_1(&format!("Carbon Footprint: {} kg CO2e", carbon_footprint).into());
+        // web_sys::console::log_1(&format!("Energy Converted: {} MJ", energy_converted).into());
+
+        (carbon_footprint, energy_converted)
     }
 }

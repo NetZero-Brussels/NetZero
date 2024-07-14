@@ -3225,12 +3225,16 @@ version = "0.1.6"
 dependencies = [
  "alloy-primitives",
  "alloy-sol-types",
+ "ethabi",
  "ethers",
  "eyre",
  "hex",
  "mini-alloc",
+ "serde",
+ "serde_json",
  "stylus-sdk",
  "tokio",
+ "web-sys",
 ]
 
 [[package]]
