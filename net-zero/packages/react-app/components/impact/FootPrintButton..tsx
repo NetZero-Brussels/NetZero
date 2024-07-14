@@ -1,6 +1,6 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, FormControl, InputLabel, Box, Typography } from '@mui/material';
 import { useWeb3 } from '@/contexts/useWeb3';
 
 interface Position {
@@ -9,12 +9,7 @@ interface Position {
 }
 
 export function FootPrintButton() {
-    const {
-        address,
-        getUserAddress,
-        getUserInfo,
-        submitRecordingToContract,
-    } = useWeb3();
+    const { address, getUserAddress, getUserInfo, submitRecordingToContract } = useWeb3();
 
     const [position, setPosition] = useState<Position>({ lat: null, lng: null });
     const [now, setNow] = useState<Date>(new Date());
@@ -33,31 +28,27 @@ export function FootPrintButton() {
 
     useEffect(() => {
         getUserAddress();
-    }, []);
+    }, [getUserAddress]);
 
     useEffect(() => {
         const fetchData = async () => {
+            if (address) {
+                try {
+                    const info = await getUserInfo(address);
+                    setPoints(Number(info.points));
+                    setUserInfo(info);
+                    setIsRegistered(true);
+                } catch (error) {
+                    console.log("User is not registered");
+                    setIsRegistered(false);
+                }
+            }
         };
 
-        if (address) {
-            fetchData();
-            checkUserRegistration();
-        }
-    }, [address]);
+        fetchData();
+    }, [address, getUserInfo]);
 
-    const checkUserRegistration = async () => {
-        try {
-            const info = await getUserInfo(address!);
-            setPoints(Number(info.points));
-            setUserInfo(info);
-            setIsRegistered(true);
-        } catch (error) {
-            console.log("User is not registered");
-            setIsRegistered(false);
-        }
-    };
-
-    const getLocation = () => {
+    const getLocation = useCallback(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -67,13 +58,17 @@ export function FootPrintButton() {
                     };
                     setPosition(newPosition);
                     setNow(new Date());
+
                     if (isRecording) {
-                        setLocations((prev) => [...prev, newPosition]);
-                        if (locations.length > 0) {
-                            const lastLocation = locations[locations.length - 1];
-                            const newDistance = calculateDistance(lastLocation, newPosition);
-                            setDistance((prev) => prev + newDistance);
-                        }
+                        setLocations((prev) => {
+                            const updatedLocations = [...prev, newPosition];
+                            if (updatedLocations.length > 1) {
+                                const lastLocation = updatedLocations[updatedLocations.length - 2];
+                                const newDistance = calculateDistance(lastLocation, newPosition);
+                                setDistance((prev) => prev + newDistance);
+                            }
+                            return updatedLocations;
+                        });
                     }
                 },
                 (error) => {
@@ -83,7 +78,7 @@ export function FootPrintButton() {
         } else {
             setError('Geolocation is not supported by this browser.');
         }
-    };
+    }, [isRecording]);
 
     const calculateDistance = (loc1: Position, loc2: Position) => {
         const R = 6371e3;
@@ -135,7 +130,7 @@ export function FootPrintButton() {
             interval = setInterval(getLocation, 5000);
         }
         return () => clearInterval(interval);
-    }, [isRecording]);
+    }, [isRecording, getLocation]);
 
     const handleStopRecording = () => {
         setIsRecording(false);
