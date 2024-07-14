@@ -3,10 +3,10 @@
 source .env
 
 # 1) Deploy mock calculator on Arbitrum
-# echo "Deploying MockCalculate contract on Arbitrum..."
-# MOCK_CALCULATE_ARBITRUM_ADDRESS=$(forge create MockCalculate --rpc-url $ARBITRUM_RPC --private-key $PRIVATE_KEY --json | jq -r '.deployedTo')
-# echo "MockCalculate contract deployed at: $MOCK_CALCULATE_ARBITRUM_ADDRESS"
-# echo "MOCK_CALCULATE_ARBITRUM_ADDRESS=$MOCK_CALCULATE_ARBITRUM_ADDRESS" >> .env
+echo "Deploying MockCalculate contract on Arbitrum..."
+MOCK_CALCULATE_ARBITRUM_ADDRESS=$(forge create MockCalculate --rpc-url $ARBITRUM_RPC --private-key $PRIVATE_KEY --json | jq -r '.deployedTo')
+echo "MockCalculate contract deployed at: $MOCK_CALCULATE_ARBITRUM_ADDRESS"
+echo "MOCK_CALCULATE_ARBITRUM_ADDRESS=$MOCK_CALCULATE_ARBITRUM_ADDRESS" >> .env
 
 
 # # set the mock environment variables
@@ -18,9 +18,9 @@ source .env
 # echo "Celo router deployed at: $CELO_ROUTER_ADDRESS"
 
 # # 3) Deploy router on Arbitrum
-echo "Deploying router on Arbitrum..."
-ARBITRUM_ROUTER_ADDRESS=$(forge create arbrouter --network arbitrum --private-key $PRIVATE_KEY --rpc-url $ARBITRUM_RPC --json | jq -r '.deployedTo')
-echo "Arbitrum router deployed at: $ARBITRUM_ROUTER_ADDRESS"
+# echo "Deploying router on Arbitrum..."
+# ARBITRUM_ROUTER_ADDRESS=$(forge create arbrouter --network arbitrum --private-key $PRIVATE_KEY --rpc-url $ARBITRUM_RPC --json | jq -r '.deployedTo')
+# echo "Arbitrum router deployed at: $ARBITRUM_ROUTER_ADDRESS"
 
 # # 4) Send a test cast on the Celo router
 # echo "Sending test cast on the Celo router..."
