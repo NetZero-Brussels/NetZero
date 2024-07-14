@@ -3,11 +3,18 @@ import NetZeroIcon from "../../public/NetZeroIcon.svg";
 import Image from 'next/image';
 import { useWeb3 } from "@/contexts/useWeb3";
 import Router from 'next/router';
+import Blockscout from "../../public/blockscout.jpeg";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
 const RegistrationPage = () => {
-
     const [userInfo, setUserInfo] = useState<any>(null);
     const [isRegistered, setIsRegistered] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [transactionHash, setTransactionHash] = useState<string>('');
 
     const {
         address,
@@ -32,12 +39,12 @@ const RegistrationPage = () => {
         try {
             const receipt = await registerUser();
             console.log("User registered:", receipt);
+            setTransactionHash(receipt.transactionHash);
+            setIsModalOpen(true);
             checkUserRegistration();
         } catch (error) {
             console.error("Error registering user:", error);
-        } finally {
-            //change url to impact
-            Router.push("/impact");
+            setIsModalOpen(true);
         }
     }
 
@@ -67,6 +74,11 @@ const RegistrationPage = () => {
             handleRegister();
             //TODO send values to the blockchain / save to localstorage
         }
+    };
+
+    const closeModalAndRedirect = () => {
+        setIsModalOpen(false);
+        Router.push("/impact");
     };
 
     return (
@@ -163,7 +175,7 @@ const RegistrationPage = () => {
                 )}
                 {step === 3 && (
                     <div>
-                        <h2 className="text-2xl font-bold mb-4  text-center">Complete Registration</h2>
+                        <h2 className="text-2xl font-bold mb-4 text-center">Complete Registration</h2>
                         <p className='text-center mb-4'>Create or Sign into your Celo wallet.</p>
                         <button
                             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
@@ -174,6 +186,35 @@ const RegistrationPage = () => {
                     </div>
                 )}
             </div>
+
+            <Dialog
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                aria-labelledby="registration-success-dialog-title"
+            >
+                <DialogTitle id="registration-success-dialog-title">Successfully Registered</DialogTitle>
+                <DialogContent>
+                    <div className="flex justify-center mb-4">
+                        <Image src={Blockscout} alt="Blockscout Logo" width={50} height={50} />
+                    </div>
+                    <p className="text-center mb-4">You have successfully registered. Click the link below to view your transaction.</p>
+                    <div className="flex justify-center">
+                        <a
+                            href={`https://explorer.celo.org/alfajores/tx/${transactionHash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 underline"
+                        >
+                            View Transaction on Blockscout
+                        </a>
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeModalAndRedirect} color="primary" variant="contained">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };

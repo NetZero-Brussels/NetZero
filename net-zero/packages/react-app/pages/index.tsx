@@ -20,8 +20,6 @@ export default function LandingPage() {
         <Link href='/register' className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full items-center text-center">
           Get Started
         </Link>
-
-
       </div>
     </div>
   );
