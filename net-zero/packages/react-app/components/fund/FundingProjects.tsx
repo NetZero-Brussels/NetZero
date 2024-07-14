@@ -4,6 +4,9 @@ import { Box, Typography, Card, CardMedia, CardContent, CircularProgress, Circul
 import { projectsData, ProjectType } from './mock/mockProjects';
 import Image from 'next/image';
 import SupportButton from './SupportButton';
+import { useWeb3 } from '@/contexts/useWeb3';
+import { parseEther } from "viem";
+
 
 interface CircularProgressWithLabelProps extends CircularProgressProps {
     value: number;
@@ -32,11 +35,42 @@ const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = (pro
 };
 
 export function FundingProjectList() {
+
+    const {
+        depositToUser,
+        approveSpending,
+    } = useWeb3();
+
+    async function handleApproval() {
+        try {
+            const amountToDeposit = "1";
+            const amountInWei = parseEther(amountToDeposit);
+            const receipt = await approveSpending(amountInWei.toString());
+            console.log("Approval done:", receipt);
+        } catch (error) {
+            console.error("Error approving spending:", error);
+        }
+    }
+
+    async function handleDeposit() {
+        try {
+            const amountToDeposit = "1";
+            const receipt = await depositToUser(amountToDeposit.toString());
+            console.log("Deposited:", receipt);
+        } catch (error) {
+            console.error("Error depositing:", error);
+        }
+    }
+
+    function donateProject() {
+        handleApproval().then(() => handleDeposit());
+    }
+
     return (
         <div className='flex p-1 overflow-y-auto whitespace-nowrap snap-proximity snap-y'>
             {projectsData.map((project: ProjectType) => (
                 <Card key={project.id} sx={{ minWidth: 300, m: 1 }}>
-                    <CardActionArea>
+                    <CardActionArea onClick={donateProject}>
                         <div className='h-[140px]'>
                             <Image
                                 src={project.image}
