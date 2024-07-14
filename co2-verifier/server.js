@@ -8,7 +8,6 @@ const port = 3000;
 
 dotenv.config();
 
-
 // Define the payloads
 const payloads = [
   {
@@ -143,6 +142,12 @@ const getTravelTypeFromUrlParam = (urlParam) => {
   };
   return mapping[urlParam] || 0; // Default to 0 if not found
 };
+
+// Schedule the task to run every 30 minutes
+cron.schedule('*/30 * * * *', async () => {
+  console.log('Executing fetchVerify...');
+  await executefetchVerify();
+});
 
 // Start the server and execute the fetches once
 app.listen(port, async () => {
