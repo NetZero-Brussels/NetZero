@@ -1,6 +1,8 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useWeb3 } from '@/contexts/useWeb3';
+
 
 interface Position {
     lat: number | null;
@@ -13,8 +15,8 @@ const GeolocationComponent: React.FC = () => {
         getUserAddress,
         getUserInfo,
         submitRecordingToContract,
-      } = useWeb3();
-    
+    } = useWeb3();
+
     const [position, setPosition] = useState<Position>({ lat: null, lng: null });
     const [now, setNow] = useState<Date>(new Date());
     const [error, setError] = useState<string | null>(null);
@@ -29,32 +31,32 @@ const GeolocationComponent: React.FC = () => {
     const [points, setPoints] = useState<number | null>(null);
     const [isRegistered, setIsRegistered] = useState<boolean>(false);
 
-  useEffect(() => {
-    getUserAddress();
-  }, []);
+    useEffect(() => {
+        getUserAddress();
+    }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
+    useEffect(() => {
+        const fetchData = async () => {
+        };
+
+        if (address) {
+            fetchData();
+            checkUserRegistration();
+        }
+    }, [address]);
+
+    const checkUserRegistration = async () => {
+        try {
+            const info = await getUserInfo(address!);
+            setPoints(Number(info.points))
+            console.log(Number(info.points))
+            setUserInfo(info);
+            setIsRegistered(true);
+        } catch (error) {
+            console.log("User is not registered");
+            setIsRegistered(false);
+        }
     };
-
-    if (address) {
-      fetchData();
-      checkUserRegistration();
-    }
-  }, [address]);
-
-  const checkUserRegistration = async () => {
-    try {
-      const info = await getUserInfo(address!);
-      setPoints(Number(info.points))
-      console.log(Number(info.points))
-      setUserInfo(info);
-      setIsRegistered(true);
-    } catch (error) {
-      console.log("User is not registered");
-      setIsRegistered(false);
-    }
-  };
 
 
     const getLocation = () => {

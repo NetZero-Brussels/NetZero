@@ -2,7 +2,7 @@ import { ProfileCard } from "../profile/ProfileCard";
 import React from "react";
 import { WalletCard } from "../profile/WalletCard";
 import { Button } from "@headlessui/react";
-import FootPrintButton from "./FootPrintButton.";
+import { FootPrintButton } from "./FootPrintButton.";
 
 
 export default function ImpactCard() {

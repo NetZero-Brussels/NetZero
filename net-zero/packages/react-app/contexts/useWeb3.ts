@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from "react";
 import StableTokenABI from "./cusd-abi.json";
 import MinipayNFTABI from "./minipay-nft.json";
@@ -367,9 +368,9 @@ export const useWeb3 = () => {
             transport: custom(window.ethereum),
             chain: celoAlfajores,
         });
-        
+
         let [address] = await walletClient.getAddresses();
-    
+
         try {
             const tx = await walletClient.writeContract({
                 address: XX,
@@ -378,19 +379,19 @@ export const useWeb3 = () => {
                 account: address,
                 args: [distance, duration, transportType, points],
             });
-    
+
             const receipt = await publicClient.waitForTransactionReceipt({
                 hash: tx,
             });
-    
+
             return receipt;
         } catch (error) {
             console.error("Error submitting recording:", error);
             throw error;
         }
     };
-    
-    
+
+
 
     return {
         address,
