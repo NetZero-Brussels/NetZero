@@ -362,11 +362,42 @@ export const useWeb3 = () => {
         return receipt;
     };
 
+    const submitRecordingToContract = async (distance: number, duration: number, transportType: number, points: number) => {
+        let walletClient = createWalletClient({
+            transport: custom(window.ethereum),
+            chain: celoAlfajores,
+        });
+        
+        let [address] = await walletClient.getAddresses();
+    
+        try {
+            const tx = await walletClient.writeContract({
+                address: XX,
+                abi: XXABI,
+                functionName: "submitRecording",
+                account: address,
+                args: [distance, duration, transportType, points],
+            });
+    
+            const receipt = await publicClient.waitForTransactionReceipt({
+                hash: tx,
+            });
+    
+            return receipt;
+        } catch (error) {
+            console.error("Error submitting recording:", error);
+            throw error;
+        }
+    };
+    
+    
+
     return {
         address,
         getUserAddress,
         sendCUSD,
         mintMinipayNFT,
+        submitRecordingToContract,
         getNFTs,
         signTransaction,
         registerUser,
