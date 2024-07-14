@@ -1,8 +1,5 @@
 import react from 'react';
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import LeaderboardSelect from './TeamSelect';
-import { LeaderboardList } from './LeaderboardList';
-
 
 export default function LeaderboardCard() {
     return (

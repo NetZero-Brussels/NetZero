@@ -1,7 +1,9 @@
 // components/ProjectList.tsx
 ;
-import { Box, Typography, Card, CardMedia, CardContent, CircularProgress, CircularProgressProps } from '@mui/material';
+import { Box, Typography, Card, CardMedia, CardContent, CircularProgress, CircularProgressProps, CardActionArea } from '@mui/material';
 import { projectsData, ProjectType } from './mock/mockProjects';
+import Image from 'next/image';
+import SupportButton from './SupportButton';
 
 interface CircularProgressWithLabelProps extends CircularProgressProps {
     value: number;
@@ -31,33 +33,38 @@ const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = (pro
 
 export function FundingProjectList() {
     return (
-        <Box p={2}>
-            <div className='flex overflow-x-auto p-1'>
-                {projectsData.map((project: ProjectType) => (
-                    <Card key={project.id} sx={{ minWidth: 300, m: 1 }}>
-                        <CardMedia
-                            component="img"
-                            height="140"
-                            image={project.image}
-                            alt={project.title}
-                        />
+        <div className='flex p-1 overflow-y-auto whitespace-nowrap snap-proximity snap-y'>
+            {projectsData.map((project: ProjectType) => (
+                <Card key={project.id} sx={{ minWidth: 300, m: 1 }}>
+                    <CardActionArea>
+                        <div className='h-[140px]'>
+                            <Image
+                                src={project.image}
+                                alt={project.title}
+                                layout="fill"
+                                className='max-h-[140px]'
+                                objectFit="cover"
+                            />
+                        </div>
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="div">
                                 {project.title}
                             </Typography>
-                            <Box display="flex" alignItems="center" gap={2}>
+                            <div className='flex items-center justify-around gap-2 mb-3'>
                                 <CircularProgressWithLabel value={project.progress} />
                                 <Typography variant="body2" color="textSecondary">
                                     {project.supporters} supporters
                                 </Typography>
-                            </Box>
-                            <Typography variant="body2" color="textSecondary">
-                                {project.timeLeft}
-                            </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {project.timeLeft}
+                                </Typography>
+                            </div>
+
+                            <SupportButton />
                         </CardContent>
-                    </Card>
-                ))}
-            </div>
-        </Box>
+                    </CardActionArea>
+                </Card>
+            ))}
+        </div>
     );
-};
+}
