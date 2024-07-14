@@ -1,8 +1,57 @@
 import { useState } from 'react';
 import NetZeroIcon from "../../public/NetZeroIcon.svg";
 import Image from 'next/image';
+import { useWeb3 } from "@/contexts/useWeb3";
+import Router from 'next/router';
 
 const RegistrationPage = () => {
+
+    const [userInfo, setUserInfo] = useState<any>(null);
+    const [isRegistered, setIsRegistered] = useState<boolean>(false);
+
+    const {
+        address,
+        getUserAddress,
+        sendCUSD,
+        mintMinipayNFT,
+        getNFTs,
+        signTransaction,
+        registerUser,
+        updateUserPoints,
+        depositToUser,
+        approveSpending,
+        withdrawFromUser,
+        getUserInfo,
+        addFriend,
+        getMoneySpent,
+        getFriends,
+        updateUpdaterAddress,
+    } = useWeb3();
+
+    async function handleRegister() {
+        try {
+            const receipt = await registerUser();
+            console.log("User registered:", receipt);
+            checkUserRegistration();
+        } catch (error) {
+            console.error("Error registering user:", error);
+        } finally {
+            //change url to impact
+            Router.push("/impact");
+        }
+    }
+
+    const checkUserRegistration = async () => {
+        try {
+            const info = await getUserInfo(address!);
+            setUserInfo(info);
+            setIsRegistered(true);
+        } catch (error) {
+            console.log("User is not registered");
+            setIsRegistered(false);
+        }
+    };
+
     const [step, setStep] = useState(1);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -15,7 +64,7 @@ const RegistrationPage = () => {
         } else if (step === 2) {
             setStep(3);
         } else {
-
+            handleRegister();
             //TODO send values to the blockchain / save to localstorage
         }
     };

@@ -29,13 +29,11 @@
   ],
   "dependencies": {
     "@apollo/client": "^3.10.8",
-    "graphql": "^16.9.0",
-    "json-bigint": "^1.0.0",
-    "react-modal": "^3.16.1",
-    "graphql": "^16.9.0",
-    "json-bigint": "^1.0.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
-    "@mui/material": "^5.16.1"
+    "@mui/material": "^5.16.1",
+    "graphql": "^16.9.0",
+    "json-bigint": "^1.0.0",
+    "react-modal": "^3.16.1"
   }
 }

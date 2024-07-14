@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import NetZeroIcon from "../public/NetZeroIcon.svg";
